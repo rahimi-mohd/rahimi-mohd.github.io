@@ -1,8 +1,8 @@
-header {
-    border-style: solid;
+h1 {
+    text-align: center;
 }
 
-body {
-    border: 1px;
-    border-style: solid;
+.quote-text {
+    text-align: center;
+    text-shadow: 0cap;
 }
