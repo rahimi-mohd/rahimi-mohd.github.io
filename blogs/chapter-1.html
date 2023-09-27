@@ -3,20 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFirstBlog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>Arch Linux</title>
 </head>
 <body>
     <header>
-        <h1>This is my first entry for this blog</h1>
+        <p class="quote-text"><strong>"NEET, an acronym for "Not in Education, Employment, or Training", refers to a person who is unemployed and not receiving an education or vocational training" -wikipedia</strong></p>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">NotNEET</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="/index.html">Home</a>
+                    <a  class="nav-link" href="/index.html">Blog</a>
+                    <a  class="nav-link" href="/index.html">Tech</a>
+                    <a  class="nav-link" href="/index.html">About Me</a>
+                </div>
+            </div>
+        </div>
+        </nav>
+        <h1>NotNEET's Blog</h1>
     </header>
-
     <main>
-        <p>
-            <a href="#chp1">Lorem, ipsum dolor sit amet consectetur adipisicing elit.</a>
-            Repudiandae laboriosam sequi fugiat eveniet neque officiis placeat accusantium 
-           rerum adipisci nemo magnam ex, sint accusamus a minima nisi vitae sit quisquam?
-        </p>
+
+        <article>
+            <h3>Arch Linux Experiences</h3>
+            <p>
+                I have been an avid linux user since late of 2019 due to my obsession with Mr.Robot and my hacker wannabe cringey teenager.
+                Long story short, I failed on my attempt to be a hacker <strong>obviously</strong> and after many distro later I stick with Linux Mint.
+                The reason is Linux Mint is so easy to setup and my familiarity with Ubuntu make it eaiser to used it.
+            </p>
+
+            <P>
+                I also happen to own several old laptop that have been collecting dust since I don't know when and I think it just normal for linux user to use
+                their old laptop to try other distro or distro hop. To be honest, I really like to distro hop because the feels you get when you manage to install 
+                it successfully on your bare metal laptop is so satisfying. I have tried some major distro such as Debian, Ubuntu, Linux Mint, Fedora, Manjaro, Endeavour OS, Arch,
+                and some not so famous one like Void (<em>I'm sorry if they are famous</em>), LXLE and many more. 
+            </P>
+
+            <p>
+                The point is, I have spend countless hour to install and setup my freshly installed linux distro and repeat the process too many times and I will always 
+                go back to Linux Mint. But, this is not about my linux journey or how I really really love Linux Mint, this is about my transition from Linux Mint to
+                Arch Linux.
+            </p>
+
+            <p>The story goes like this, I have tried Arch Linux multiple times before and my setup is basically the same every time, Arch + i3. I really love tiling windows and 
+                i3 happen to be the first I tried and I don't bother to change to other tiling window manager for whatever reasons, i3 just work for me and I really love the workflow. But as 
+                I said before, I always go back to Linux Mint because it's really feel like home to me. There's a time when I used Arch for a month or something then I changed back to Linux Mint 
+                for no reason, that how I love Linux Mint.
+            </p>
+
+            <p>
+                But, I have this habit that I like to start fresh every time I start a new semester. Yes I'm old but I'm still a student. So this time I think to myself let's try to use Arch for 
+                this whole semester and the journey start on September 2023. 
+            </p>
+
+            <p>
+                The installation is quiet easy since I've do it so many times and I have some script for which packages to install during installation and all. To be honest, the installation process 
+                is not so hard and everyone can do it if they can do it properly, just remember to install network manager and boot manager and you will be safe.
+            </p>
+
+            <p>
+                I remember the reason why I love Debian based distro is because it is easier to find .deb packages. The packages that I have to installed no matter what is 
+                Visual Studio Code and Google Chrome for college, and pacman doesn't have both. So that's is the main reason why I used Debian based distro before..... I know how to use AUR properly. 
+                Both Visual Studio Code and Google Chrome can be install using AUR and I used yay to manage my packages. 
+            </p>
+
+            <p>
+                The way I setup my system is by using alacritty as my main terminal emulator and I set it on my first workspace, second workspace is for browsers such as Firefox (<em>For my personal browsing stuff</em>) 
+                and Google Chrome (<em>For college things only</em>). Then I have Visual Studio Code to run on workspace 3 and other software on other workspaces. 
+            </p>
+
+            <p>
+                This ensure my productivity and easier for me to do things when I can switch workspaces like that. I also used tmus and neovim(<em>lazyvim</em>) for coding personal project and editing text. It's not like 
+                I'm good at vim, I just love the keybinding especially it movement. I also use vim extension on Visual Studio Code because I used to it. 
+            </p>
+
+            <p>
+                For file manager, I use pcmanfm because it's really lightweight. Actually, file manager and mount thinggy was also the reason I changed distro back then, I used external hard disk a lot and I don't know how 
+                to automatically mount it, I have to <code>sudo mount /dev/blabla /mnt/blabla</code> every time and it can get very tired right?! I know I'm stupid, the only thing that I have to install is gvfs and it help 
+                to mount the drive automatically so my problem is solved.
+            </p>
+
+            <p>
+                Other software that I use is Okular for PDF viewer, this is very important for me since all my college's resources and book are in PDF so I choose Okular because it's easy to use.
+                VLC for video and music player, actually I didn't listen to music much and I use Spotify whenever I want to listen to music. Thank again for AUR. 
+            </p>
+
+            <p>
+                It's been almost a month since I use Arch and I hope that I can maintain and use it atleast until January which is end of this semester, then maybe 
+                I can change to other distro or back to my beloved Linux Mint. I also planned to keep updating about my journey with Arch Linux or....... my journey with other distro
+                if I change to other distro.
+            </p>
+
+            <p>
+                For now Arch is very good and I start to maintain it very well, the most important thing is it have all the software needed for my college. It will be pointless if it didn't support the 
+                software needed for my college.
+            </p>
+
+            <p>
+                Thank You
+            </p>
+        </article>
+
+
+        <aside>
+            <p>Quick link to blog post</p>
+            <a href="/blogs/chapter-1.html">Chapter 1</a>
+        </aside>
     </main>
+
+    <footer>
+
+    </footer>
     
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </body>
 </html>
