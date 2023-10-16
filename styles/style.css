@@ -1,3 +1,10 @@
+/* color */
+body {
+    background-color: darkslategrey;
+}
+
+
+
 h1 {
     font-family: Helvetica, Arial, sans-serif ;
     font-size: bold;
