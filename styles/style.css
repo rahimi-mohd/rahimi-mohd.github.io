@@ -1,5 +1,4 @@
 /* color */
-
 body {
     background-color: black;
 }
@@ -15,6 +14,10 @@ p, a {
 
 .published-date {
     text-indent: 10%;
+}
+
+ol li {
+    color: aliceblue;
 }
 
 h1 {
@@ -44,9 +47,18 @@ code {
     color: lightslategray;
 }
 
+.special-text {
+    text-align: center;
+    background-color: lightskyblue;
+    /* top right bottom left */
+    margin: 10px 10px 10px 10px;
+    padding: 10px 10px 10px 10px;
+}
+
+
 /* main layout */
 main {
-    display:flex;
+    display: block;
 }
 
 article, section {
@@ -54,18 +66,14 @@ article, section {
     padding: 5%;
 }
 
-aside {
-    flex: 1;
-    margin-left: 10px;
-    padding: 1%;
-    border: groove 1px;
-    border-color: white;
+.back-home {
+    margin-left: 50px;
+    margin-bottom: 20px;
 }
 
-aside a {
-    display: block;
-    float: left;
-    width: 50%;
+a {
+    margin-right: 10px;
+    text-decoration: none;
 }
 
 footer {
