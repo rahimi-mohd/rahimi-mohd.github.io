@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/style.css">
+    <title>My First Technical Interview</title>
+</head>
+<body>
+    <header>
+        <nav class="navigation">
+            <a href="../index.html">Home</a>
+            <a href="about.html">About</a>
+        </nav>
+        <p class="quote-text"><strong>"NEET, an acronym for "Not in Education, Employment, or Training", refers to a person who is unemployed and not receiving an education or vocational training" -wikipedia</strong></p>
+        <h1>NotNEET's Blog</h1>
+    </header>
+
+    <main>
+
+        <article>
+            <h3>My First IQ Test and Technical Interview</h3>
+            <p><i>Post on Mon, 22 Jan 2024 </i></p>
+
+            <!-- intro -->
+            <p>
+                &emsp;Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (<i>manual or automation</i>). Since I'm already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don't have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I still tried my luck and I guess we can only pray for my luck to happen ?.
+            </p>
+
+            <p>
+                &emsp;To my suprise, there's some companies who reach me back and said that they want to proceed the interview session with me. I have to reject one company (<i>backend/embedded engineer</i>), this is because it is too far from my home and they didn't allowed work from home, I don't care about working from office, it just I don't want to spend half of my day on the road commuting from home to office. Another company (<i>backend engineer internship</i>), also said that they want to know me better and send me a Google Form link to answer some questions about my details and tech stack. So I fill out the form and... I don't know maybe they're ok with my details and tech stack so they asked me to attend IQ test and technical test on wed, 17 Jan 2024. So this is my first technical interview experiences.
+            </p>
+
+            <p>
+                &emsp;I have two and a half day to prepare for my first technical test, first thing that come to mind is LeetCode. I have never tried LeetCode before and I know I suck at problem solving, this is because I spend too much time on learning programming languages instead of learning programming and problem solving (<i>probably will explain about this on later blog</i>). I can solved two sum with two for loops but I know this is not the optimum answer, then I study the solution which using map or dictionary. I realized now that I'm suck at problem solving and I need to study more. I don't know what to expect for my interview, I just hope that they didn't have this kind of questions.
+            </p>
+
+            <p>
+                &emsp;During the interview, there's only one person and she didn't asked me too many question since this is not behavioral interview, so she just asked me to introduced myself and I can start if I'm ready. When I said I'm ready, she shared with me the IQ test questions and I have to share my screen to answer the questions, they were all subjective questions where you have to think about the answer and there's no hint. I guess I can answer most of them, even though I don't know how IQ test work and I don't even know if my answers is correct or not. What shock me the most is that I have to really write the answer for IQ test, I thought all IQ test use Multi Choice Question (MCQ) format but not this time I guess.
+            </p>
+
+            <p>
+                &emsp;After I have finish IQ test, we continue straight to technical test. So the questions are not too bad, it just..... I blank. I'm not sure how to describe the situation but I can't think straight and I kinda lost it. So I have a choice whether to write complete code (<i>python</i>) or just write pseudocode, obviously this will affect the mark whatsoever. The problem happened when I tried to write python code for question one but when I run it, it doesn't do what it's supposed to do, so I panicked and I think that's the reason I can't answer most of the questions. When I checked back the questions after the interview, I started to laugh out loud and think "what the fuck is wrong with me, how can I be so stupid ?"."
+            </p>
+
+            <p>
+                &emsp;These are the questions and how I solved it after the interview, I can't remember how I answer it during the interview because I give up writing the answer in python after it failed to run as intended for question one. I guess I got it all right using pseudocode but who know ? Maybe they will review it back with me later. <b>Notes,</b> all the question have been changed to make it shorter and the answer is not the answer I write during the interview, this is the answer I think of after the interview.
+            </p>
+            <br>
+
+            <p><b>Question One:</b></p>
+            <p>
+                Given two list of names, return new list without duplicate values.<br>
+                Example:<br>
+                name_1 = ["ava", "olivia", "emma"]<br>
+                name_2 = ["olivia", "sophia", "emma"]<br>
+                unique_names(name_1, name_2)<br>
+
+                should return ["emma", "olivia", "sophia"]<br>
+
+            </p>
+
+            <p>
+
+                <u>My answer</u>
+                <pre><code>
+                    def unique_names(l: list[str], ll: list[int]) -> list[int]:
+                        names = l + ll
+                        return list(set(names))
+                </code></pre>
+            </p>
+            <br>
+
+            <p><b>Question Two:</b></p>
+            <p>
+                Create a function find_roots to find the roots of the quadratic equation: ax**2 + bx + c = 0. You can find the formula for the roots of the quadratic equation <a href="https://en.wikipedia.org/wiki/Quadratic_equation">here.</a>
+
+            </p>
+
+            <p>
+                <u>My answer:</u>
+                <pre><code>
+                    import math
+                    def find_roots(a: int, b: int, c: int) -> list[int]:
+                        d = math.sqrt(b**2 - 4 * a * c)
+                        root_1 = (-b + d) / (2 * a)
+                        root_2 = (-b - d) / (2 * a)
+
+                        return [root_1, root_2]
+                </code></pre>
+            </p>
+            <br>
+
+            <p><b>Question Three:</b></p>
+            <p>
+                Given a files with key value of k: text_file_name, v: name, return a map of k: name, v: list_of_text_file_name.
+            </p>
+
+            <p>
+                <u>My answer:</u>
+                <pre><code>
+                    files = {
+                        "Input.txt" : "Randy",
+                        "Code.py" : "Stan",
+                        "Output.txt" : "Randy"
+                    }
+
+                    def group_by_owner(files: dict) -> dict:
+                        m = {}
+
+                        for k, v in files.item():
+                            if v not in m:
+                                m[v] = [k]
+                            else:
+                                m[v].append(k)
+                        
+                        return m
+                </code></pre>
+            </p>
+            <br>
+
+            <p><b>Question Four:</b></p>
+            <p>
+                Implement TextInput class that contains method add(text), which add given text to the current value. Method get_value(), which return the current value in string
+                Implement NumericInput class that inherit from TextInput, override the add method so that each non-numeric text is ignored.
+            </p>
+
+            <p>
+                <u>My answer</u>
+                <pre><code>
+                    class TextInput:
+                        def __init__(self):
+                            self.value = ""
+
+                        def add(self, text):
+                            self.value = text    
+
+                        def get_value(self):
+                            return self.value
+
+                    class NumericInput(TextInput):
+                        def add(self, text):
+                        if text.isdigit():
+                            self.value += text
+                </code></pre>
+            </p>
+            <br>
+
+            <p>
+                &emsp;I know, all the questions were very easy and I really can do it if I'm not panic and can think clearly. I guess everybody have this <i>first-time-syndrome</i> where they're easily panic and can't focus and think clearly. Other reason why I'm panic is because I have this expectation that they will give me LeetCode's style of question and that make me think that I'm already over before even thinking about the question in front of me.
+            </p>
+
+            <!-- summary -->
+            <p>
+                &emsp;So yeah, that's my first technical interview experience, even though I still don't know the result and I expected it to failed, I really glad I got to experience it. It was a fun experience, it's like when you went to dentist and you're nervous as hell, but it's really nothing and you can eat all you favourite food after that. What I learned is I suck at problem solving and I have to focus on them instead of learning new programming languages, I really need to know what my strenght and weekness so that I can improve myself and evolve into higher being (<i>lol no, instead of higher being what I really want to be is good at IT stuff</i>). I guess this year started with a bang and I hope that I can still get the chances to feel this rush again. 
+            </p>
+
+            <p>
+                Thank you for reading, have a nice day :D
+            </p>
+
+            
+
+        </article>
+
+        <div class="back-home"><a href="/index.html"><==</a></div>
+    </main>
+
+    
+    
+    <footer>
+
+    </footer>
+</body>
+</html>
