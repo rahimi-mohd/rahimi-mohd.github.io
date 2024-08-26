@@ -1,0 +1,7 @@
+# this data can be use at site.data.navigation, site/_data/html file
+- name: Home
+  link: /
+- name: About
+  link: /about.html
+- name: Blog
+  link: /blog.html

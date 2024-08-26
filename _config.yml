@@ -1,0 +1,11 @@
+collections:
+  authors: 
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# github pages configs
+domain: rahimi-mohd.github.io
+url: https://rahimi-mohd.github.io
