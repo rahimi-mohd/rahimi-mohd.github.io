@@ -1,5 +1,22 @@
 ---
 layout: base
-title: Home Site
+title: Home
 ---
-<h1>This is home page</h1>
+
+<div class="intro-text">
+    <p>NEET, an acronym for "Not ni Education, Employment, or Training", refers to a person who is unemployed and not receiving and education or vocational training. - wikipedia</p>
+</div>
+
+<div class="title-text">
+    <h1>NotNeet</h1>
+</div>
+
+
+<ul>
+    {% for post in site.posts %}
+    <li>
+        <p><a href="{{ post.url }}" class="post-list">{{ post.title }}</a> - {{ post.date | date: "%-d %B %Y" }}</p>
+        {{ post.excerpt | strip_html | truncatewords: 50 }}
+    </li>
+    {% endfor %}
+</ul>
