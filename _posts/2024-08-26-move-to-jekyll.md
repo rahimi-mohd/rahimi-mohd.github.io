@@ -79,4 +79,48 @@ I have to edit `base.html`, save it as `blog{n}.hmlt`, and index it in my index.
 
 Actually, this is the second day I'm using jekyll--on the time I'm writing this post--so I can't give more comment it pros and cons, and my experience using it, I will come back to it later. But for now, I'm excited to write more blog and to explore more about jekyll--theme? Finally, please, please, please excuse my website's ugly interface, yeah I know it's not beautiful (yet!), but I'm going to fix that later!
 
-...CYA!
+---
+
+### Update - 28Sept2024
+
+See, I have once more install Arch with i3wm and I need to re-setup jekyll. This time, I chose to use `rbenv` route to install Ruby, following the guide from [The Odin Project](https://www.theodinproject.com/lessons/ruby-installing-ruby). Here how you can do it too:
+
+> Note: I already have `base-devel` installed, you may need to install it first.
+
+Install rbenv
+
+```
+$ git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv
+$ ~/.rbenv/bin/rbenv init # initialize rbenv
+```
+
+For some reason, rbenv init command--second command--write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine.
+
+Install ruby-build
+
+```
+$ mkdir -p "$(rbenv root)"/plugins
+$ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+$ rbenv -v # this will return rbenv version if successfully installed
+```
+
+Then, we can install Ruby
+
+```
+$ rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5
+$ rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use
+```
+
+Finally, check Ruby version for our system
+
+```
+$ ruby -v # this should return ruby_version, in my case 3.3.5
+```
+
+Now, we can follow our initial setup above, starting from **Add `GEM_HOME` and it executable path in `.bashrc`**.
+
+**NOTE** Since this is updated setup, meaning that I already have my blog set up in github, I need to install several gems packages (or modules, I don't know what you call it) such as pygments.rb, jekyll-sitemap, jekyll-feed, jekyll-seo-tags and github-pages. I installed all this packages with `$ gem install {package_name} # change package_name with the needed packages`. **END**
+
+**NOTE** You also may or may not get error when trying to run `jekyll serve`, the solution is to run `bundle exec jekyll serve`  instead. **END**
+
+Have fun and...CYA!

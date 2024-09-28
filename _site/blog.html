@@ -40,7 +40,7 @@
     <ul>
         
         <li>
-            <h2><a href="/2024/08/31/django-fill-form-with-primay-key.html">Django Fill Form With Primay Key</a></h2>
+            <h2><a href="/2024/08/31/django-get-initial-data-in-forms.html">Django Get Initial Data In Forms</a></h2>
             <p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
 
 <p>The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends <code class="language-plaintext highlighter-rouge">ListView</code>. Example:</p>
@@ -230,7 +230,49 @@ $ git commit -m "initial blog setup"    # commit all changes
 
 <p>Actually, this is the second day I’m using jekyll–on the time I’m writing this post–so I can’t give more comment it pros and cons, and my experience using it, I will come back to it later. But for now, I’m excited to write more blog and to explore more about jekyll–theme? Finally, please, please, please excuse my website’s ugly interface, yeah I know it’s not beautiful (yet!), but I’m going to fix that later!</p>
 
-<p>…CYA!</p>
+<hr />
+
+<h3 id="update---28sept2024">Update - 28Sept2024</h3>
+
+<p>See, I have once more install Arch with i3wm and I need to re-setup jekyll. This time, I chose to use <code class="language-plaintext highlighter-rouge">rbenv</code> route to install Ruby, following the guide from <a href="https://www.theodinproject.com/lessons/ruby-installing-ruby">The Odin Project</a>. Here how you can do it too:</p>
+
+<blockquote>
+  <p>Note: I already have <code class="language-plaintext highlighter-rouge">base-devel</code> installed, you may need to install it first.</p>
+</blockquote>
+
+<p>Install rbenv</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv
+$ ~/.rbenv/bin/rbenv init # initialize rbenv
+</code></pre></div></div>
+
+<p>For some reason, rbenv init command–second command–write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine.</p>
+
+<p>Install ruby-build</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p "$(rbenv root)"/plugins
+$ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+$ rbenv -v # this will return rbenv version if successfully installed
+</code></pre></div></div>
+
+<p>Then, we can install Ruby</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5
+$ rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use
+</code></pre></div></div>
+
+<p>Finally, check Ruby version for our system</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ruby -v # this should return ruby_version, in my case 3.3.5
+</code></pre></div></div>
+
+<p>Now, we can follow our initial setup above, starting from <strong>Add <code class="language-plaintext highlighter-rouge">GEM_HOME</code> and it executable path in <code class="language-plaintext highlighter-rouge">.bashrc</code></strong>.</p>
+
+<p><strong>NOTE</strong> Since this is updated setup, meaning that I already have my blog set up in github, I need to install several gems packages (or modules, I don’t know what you call it) such as pygments.rb, jekyll-sitemap, jekyll-feed, jekyll-seo-tags and github-pages. I installed all this packages with <code class="language-plaintext highlighter-rouge">$ gem install {package_name} # change package_name with the needed packages</code>. <strong>END</strong></p>
+
+<p><strong>NOTE</strong> You also may or may not get error when trying to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, the solution is to run <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code>  instead. <strong>END</strong></p>
+
+<p>Have fun and…CYA!</p>
 
         </li>
         
