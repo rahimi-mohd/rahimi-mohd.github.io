@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
     <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="rahimi-mohd.github.io" />
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Blog | rahimi-mohd.github.io</title>
@@ -24,6 +29,7 @@
     <!-- <link rel="stylesheet" href="/assets/css/styles.scss"> -->
     <title>Blog</title>
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -34,119 +40,106 @@
     
 </nav>
 
-    <h1>Latest Posts</h1>
+    <div class="main-container">
+        <h1>Latest Posts</h1>
 
 <div class="list-item">
     <ul>
         
         <li>
             <h2><a href="/2024/08/31/django-get-initial-data-in-forms.html">Django Get Initial Data In Forms</a></h2>
-            <p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
+            <div class="tldr">
+    This is how you can get initial data--from models--and show it in form's field.
+</div>
+<p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
 
 <p>The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends <code class="language-plaintext highlighter-rouge">ListView</code>. Example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-...
-app_name = "clinic"
-urlpatterns = [
-    path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"),
-]
+<span class="p">...</span>
+<span class="n">app_name</span> <span class="o">=</span> <span class="s">"clinic"</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">ListCheckInPageView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_list"</span><span class="p">),</span>
+<span class="p">]</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
-
-class ListCheckInPageView(ListView):
-    template_name = "clinic/checkin_list.html"
-    queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top
-    context_object_name = "checkin_list"
-
-</code></pre></div></div>
+<span class="k">class</span> <span class="nc">ListCheckInPageView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_list.html"</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">CheckIn</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nb">all</span><span class="p">().</span><span class="n">order_by</span><span class="p">(</span><span class="s">"-check_in_time"</span><span class="p">)</span> <span class="c1"># this will display the latest on top
+</span>    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">"checkin_list"</span></code></pre></figure>
 
 <hr />
 
 <p>Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin")
+<span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/checkin/"</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin"</span><span class="p">)</span>
 
-... end new code
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_patient.html"</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">CheckInForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">"clinic:patient_list"</span><span class="p">)</span>
 
-class CheckInView(FormView):
-    template_name = "clinic/checkin_patient.html"
-    form_class = CheckInForm
-    success_url = reverse_lazy("clinic:patient_list")
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="n">form</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
-    def form_valid(self, form):
-    form.save()
-    return super().form_valid(form)
-
-    ... end new code
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <hr />
 
 <p>To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("patient_list/&lt;int:pk&gt;/checkin/", views.CheckInView.as_view(), name="checkin_pk")
+<span class="n">path</span><span class="p">(</span><span class="s">"patient_list/&lt;int:pk&gt;/checkin/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_pk"</span><span class="p">)</span>
 
-... end new code
-
-</code></pre></div></div>
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-...
+<span class="p">...</span>
 
-class CheckInView(FormView):
-    ... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            context["patient"] = patient 
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span> 
 
-        return context
+        <span class="k">return</span> <span class="n">context</span>
     
 
-    def get_initial(self):
-        initial = super().get_initial()
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">initial</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_initial</span><span class="p">()</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            initial["patient"] = patient
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">initial</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span>
 
-        return initial
+        <span class="k">return</span> <span class="n">initial</span>
 
-    ... end new code
-
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is <code class="language-plaintext highlighter-rouge">patient_list/1/checkin/</code>, we’ll use the data from patient with primary key = 1 to fill the form.</p>
 
@@ -158,7 +151,11 @@ class CheckInView(FormView):
         
         <li>
             <h2><a href="/2024/08/26/move-to-jekyll.html">Move To Jekyll</a></h2>
-            <p><strong>Hello, Jekyll!</strong> I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my <code class="language-plaintext highlighter-rouge">base.html</code>–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know).</p>
+            <div class="tldr">
+    Jekyll have been working super fine for me now, I don't have any problem with it even when I try to set it up on different OS with different package manager (Debian based to Arch based).
+</div>
+
+<p><strong>Hello, Jekyll!</strong> I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my <code class="language-plaintext highlighter-rouge">base.html</code>–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know).</p>
 
 <p>So, what I’m looking for is a system or framework that can automate or render my writing into proper html, I try to use Emacs (org to html) and Obsidian (markdown to html) but I’ve never success with the templating system. Yes, I can export my writing into html but I struggle with the templating and styling.</p>
 
@@ -170,40 +167,34 @@ class CheckInView(FormView):
 
 <p>Install all the requirements</p>
 
-<p><code class="language-plaintext highlighter-rouge">$ sudo apt install ruby-full build-essential zlib1g-dev</code></p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">sudo </span>apt <span class="nb">install </span>ruby-full build-essential zlib1g-dev</code></pre></figure>
 
 <p>Add <code class="language-plaintext highlighter-rouge">GEM_HOME</code> and it executable path in <code class="language-plaintext highlighter-rouge">.bashrc</code></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-.bashrc
-GEM_HOME="$HOME/.gems"  # change .gems to gems if you don't want to hide it
-export PATH=$PATH:"$HOME/.gems.bin"
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">.bashrc
+<span class="nv">GEM_HOME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.gems"</span>  <span class="c"># change .gems to gems if you don't want to hide it</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.gems.bin"</span></code></pre></figure>
 
 <p>Install jekyll and bundler</p>
 
-<p><code class="language-plaintext highlighter-rouge">$ gem install jekyll bundler</code></p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">gem <span class="nb">install </span>jekyll bundler</code></pre></figure>
 
 <p>Okay, now we’re halfway through the process. We’ve install Ruby, jekyll, and bundler. Now come the fun part, creating our blog. Create a new folder where you want to put your blog, let’s called it <code class="language-plaintext highlighter-rouge">my-blog</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-$ mkdir -p Documents/my-blog    # create folder
-$ cd Documents/my-blog          # change direction into my-blog
-$ bundle init                   # create new Gemfile
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">mkdir</span> <span class="nt">-p</span> Documents/my-blog    <span class="c"># create folder</span>
+<span class="nb">cd </span>Documents/my-blog          <span class="c"># change direction into my-blog</span>
+bundle init                   <span class="c"># create new Gemfile</span></code></pre></figure>
 
 <p>To add jekyll as dependency, we have to add <code class="language-plaintext highlighter-rouge">gem "jekyll"</code> into Gemfile, and run <code class="language-plaintext highlighter-rouge">bundle</code> to install it. It’s also a good time to start commiting our development journey, let’s initialize a Git repository and commit it.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-$ git init
-$ vim .gitignore                        # change vim to any editor you comfortable with
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">git init
+vim .gitignore                        <span class="c"># change vim to any editor you comfortable with</span>
 
 .gitignore
-Gemfile.lock                            # this will prevent git to add Gemfile.lock into repository
+Gemfile.lock                            <span class="c"># this will prevent git to add Gemfile.lock into repository</span>
 
-$ git add .                             # add all files and folders into stage 
-$ git commit -m "initial blog setup"    # commit all changes
-</code></pre></div></div>
+git add <span class="nb">.</span>                             <span class="c"># add all files and folders into stage </span>
+git commit <span class="nt">-m</span> <span class="s2">"initial blog setup"</span>    <span class="c"># commit all changes</span></code></pre></figure>
 
 <p>We’re almost there, the last step before we can serve our website is to have a….. website, Duh!. Remember that we still didn’t write any HTML, let’s fix that by creating new <code class="language-plaintext highlighter-rouge">index.html</code> in root folder and write anything you want–this is not HTML tutorial. To start serving your website, run <code class="language-plaintext highlighter-rouge">$ jekyll serve</code> and open <code class="language-plaintext highlighter-rouge">http://localhost:4000</code> on your favorite web browser. Walla, here’s your magnificent, beautiful, little website ready to be seen by the entire world–Nah, just kidding, this only serve the website on your localhost port 4000, you have to deploy it to make it available to the entire world.</p>
 
@@ -213,16 +204,14 @@ $ git commit -m "initial blog setup"    # commit all changes
 
 <p>It’s obvious why I changed to jekyll, but the main reason is the templating system. I already familiar with jinja2 and Django template (I don’t know what they called Django template, so maybe just Django template?), to have this kind of system is the major improvement for any blogger–one more time, I’m not a <strong>blogger</strong> blogger, just a guy who like to write and want to improve his workflow. My old, plain, and traditional blogging system look like this</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-- index.html  
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">- index.html  
 - blogs/
     - base.html
     - blog1.html
     - blog2.html
 - statics
     - style.css
-    - app.js
-</code></pre></div></div>
+    - app.js</code></pre></figure>
 
 <p>I have to edit <code class="language-plaintext highlighter-rouge">base.html</code>, save it as <code class="language-plaintext highlighter-rouge">blog{n}.hmlt</code>, and index it in my index.html. Actually, it’s not so bad, but why not use templating system to make my life easier right ?</p>
 
@@ -242,29 +231,25 @@ $ git commit -m "initial blog setup"    # commit all changes
 
 <p>Install rbenv</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv
-$ ~/.rbenv/bin/rbenv init # initialize rbenv
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">git clone https://github.com/rbenv/rbenv.git ~/.rbenv <span class="c"># clone rbenv</span>
+~/.rbenv/bin/rbenv init <span class="c"># initialize rbenv</span></code></pre></figure>
 
 <p>For some reason, rbenv init command–second command–write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine.</p>
 
 <p>Install ruby-build</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p "$(rbenv root)"/plugins
-$ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-$ rbenv -v # this will return rbenv version if successfully installed
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="si">$(</span>rbenv root<span class="si">)</span><span class="s2">"</span>/plugins
+git clone https://github.com/rbenv/ruby-build.git <span class="s2">"</span><span class="si">$(</span>rbenv root<span class="si">)</span><span class="s2">"</span>/plugins/ruby-build
+rbenv <span class="nt">-v</span> <span class="c"># this will return rbenv version if successfully installed</span></code></pre></figure>
 
 <p>Then, we can install Ruby</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5
-$ rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">rbenv <span class="nb">install</span> <span class="o">{</span>ruby_version<span class="o">}</span> <span class="nt">--verbose</span> <span class="c"># change ruby_version into the version that you want, the latest during my installation is 3.3.5</span>
+rbenv global <span class="o">{</span>ruby_version<span class="o">}</span> <span class="c"># change ruby_version to the one that you install, this tell our system which Ruby we want to use</span></code></pre></figure>
 
 <p>Finally, check Ruby version for our system</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ruby -v # this should return ruby_version, in my case 3.3.5
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">ruby <span class="nt">-v</span> <span class="c"># this should return ruby_version, in my case 3.3.5</span></code></pre></figure>
 
 <p>Now, we can follow our initial setup above, starting from <strong>Add <code class="language-plaintext highlighter-rouge">GEM_HOME</code> and it executable path in <code class="language-plaintext highlighter-rouge">.bashrc</code></strong>.</p>
 
@@ -278,7 +263,11 @@ $ rbenv global {ruby_version} # change ruby_version to the one that you install,
         
         <li>
             <h2><a href="/2024/01/22/technical-interview.html">Technical Interview</a></h2>
-            <p>Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen.</p>
+            <div class="tldr">
+    Well, my first ever technical interview which obviously I failed.
+</div>
+
+<p>Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen.</p>
 
 <p>To my suprise, there’s some companies who reach back and want to interview me. Unfortunately, I have to reject one interview (backend/embedded engineer), due to it being too far from my home and they didn’t allowed work from home. Actually, I don’t care about working from office, I just don’t want to spend half of my day on the road commuting from home to office and back.</p>
 
@@ -305,10 +294,10 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def unique_names(l: list[str], ll: list[int]) -&gt; list[int]:
-        names = l + ll
-        return list(set(names))
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">unique_names</span><span class="p">(</span><span class="n">l</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ll</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="n">ll</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">))</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-two">Question Two:</h3>
@@ -317,13 +306,13 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer:</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    import math
-    def find_roots(a: int, b: int, c: int) -&gt; list[int]:
-        d = math.sqrt(b**2 - 4 * a * c)
-        root_1 = (-b + d) / (2 * a)
-        root_2 = (-b - d) / (2 * a)
-        return [root_1, root_2]
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">math</span>
+<span class="k">def</span> <span class="nf">find_roots</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">root_1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">root_2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">root_1</span><span class="p">,</span> <span class="n">root_2</span><span class="p">]</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-three">Question Three:</h3>
@@ -332,22 +321,22 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer:</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    files = {
-        "Input.txt" : "Randy",
-        "Code.py" : "Stan",
-        "Output.txt" : "Randy"
-    }
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"Input.txt"</span> <span class="p">:</span> <span class="s">"Randy"</span><span class="p">,</span>
+    <span class="s">"Code.py"</span> <span class="p">:</span> <span class="s">"Stan"</span><span class="p">,</span>
+    <span class="s">"Output.txt"</span> <span class="p">:</span> <span class="s">"Randy"</span>
+<span class="p">}</span>
 
-    def group_by_owner(files: dict) -&gt; dict:
-        m = {}
-        for k, v in files.item():
-            if v not in m:
-                m[v] = [k]
-            else:
-                m[v].append(k)
-        
-        return m
-</code></pre></div></div>
+<span class="k">def</span> <span class="nf">group_by_owner</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">files</span><span class="p">.</span><span class="n">item</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">v</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">m</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-four">Question Four:</h3>
@@ -357,18 +346,18 @@ Implement NumericInput class that inherit from TextInput, override the add metho
 
 <p><strong>My answer</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    class TextInput:
-        def __init__(self):
-            self.value = ""
-        def add(self, text):
-            self.value = text    
-        def get_value(self):
-            return self.value
-    class NumericInput(TextInput):
-        def add(self, text):
-        if text.isdigit():
-            self.value += text
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TextInput</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">text</span>    
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">value</span>
+<span class="k">class</span> <span class="nc">NumericInput</span><span class="p">(</span><span class="n">TextInput</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">text</span><span class="p">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">+=</span> <span class="n">text</span></code></pre></figure>
+
 <hr />
 
 <h3 id="conclusion">Conclusion</h3>
@@ -381,33 +370,35 @@ Implement NumericInput class that inherit from TextInput, override the add metho
         
         <li>
             <h2><a href="/2023/10/31/programming.html">Programming</a></h2>
-            <p>I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then.</p>
+            <div class="tldr">
+    This is a brief history on how I start to learn program and what make me want to learn more about technology and programming in general.
+</div>
+
+<p>I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then.</p>
 
 <p>Don’t get me wrong, it’s not like I’m a pro coder now, or I’ve built some life changing applications, it’s just I really love coding and learn new programming languages. The first programming language that I learn back then was C++ and guess what? I failed. I didn’t make it pass variable section because I was very busy back then with my full time hob and life responsibilities (<strong>C++ was very hard too</strong>).</p>
 
 <p>The first C++ code I wrote is this simple profit calculator, life changing right ?!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-int main() {
-    string whatToSell;
-    float capitalMoney;
-    float todaySales;
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">whatToSell</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">capitalMoney</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">todaySales</span><span class="p">;</span>
 
-    cout &lt;&lt; "Tell me what do you want to sell: ";
-    cin &gt;&gt; whatToSell;
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Tell me what do you want to sell: "</span><span class="p">;</span>
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">whatToSell</span><span class="p">;</span>
     
-    cout &lt;&lt; "This is your " &lt;&lt; whatToSell &lt;&lt; " business calculator\n";
-    cout &lt;&lt; "Enter your entry money: ";
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"This is your "</span> <span class="o">&lt;&lt;</span> <span class="n">whatToSell</span> <span class="o">&lt;&lt;</span> <span class="s">" business calculator</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Enter your entry money: "</span><span class="p">;</span>
 
-    cin &gt;&gt; capitalMoney;
-    cout &lt;&lt; "Enter today sales: ";
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">capitalMoney</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Enter today sales: "</span><span class="p">;</span>
 
-    cin &gt;&gt; todaySales;
-    cout &lt;&lt; "Your profit for today is " &lt;&lt; todaySales - capitalMoney&lt;&lt; ".";
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">todaySales</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your profit for today is "</span> <span class="o">&lt;&lt;</span> <span class="n">todaySales</span> <span class="o">-</span> <span class="n">capitalMoney</span><span class="o">&lt;&lt;</span> <span class="s">"."</span><span class="p">;</span>
 
-    return 0;
-}
-</code></pre></div></div>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
 
 <p>I stop programming for awhile and then came back with Python, that’s the best time of my life and I really enjoy the learning process, I learn most of programming concept by learning python. I learn about variable, loop, function, oop and many more. This is not an advertisement or promoting Python programming language, but I really recommend people who want to learn programming to learn Python. This is because it help to teach you the concept of programming language properly, after that, you can move on to any language that you like. For people who like web development especially frontend, you can start by learning javascript.</p>
 
@@ -419,7 +410,7 @@ int main() {
 
 <p>I still learn Python in my free time, I’ve start to get into backend development using Django (To-Do apps incoming :p).</p>
 
-<p>Self Reminder: Remember to touch grass one in a while.</p>
+<p>Self Reminder: Remember to touch grass once in a while.</p>
 
         </li>
         
@@ -463,6 +454,8 @@ int main() {
         
     </ul>
 </div>
+    </div>
 
 </body>
+
 </html>

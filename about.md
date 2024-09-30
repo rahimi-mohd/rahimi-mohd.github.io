@@ -3,16 +3,23 @@ layout: base
 title: About
 ---
 
-Hello, I'm Rahimi. This page will gives some background and information about me.
+<div class="tldr">
+    Hello, I'm Rahimi. This page will gives some background and information about me.
+</div>
 
-### Study
+<div class="title-font">
+    <h3>Study</h3>
+</div>
 
 05-2022 - Now, Open University Malaysia  
 Diploma in Information Technology (Final Year)  
 CGPA: 3.85
+Internship Date: Jan 2025
+Expected Graduated: May 2025
 
-
-### Projects
+<div class="title-font">
+    <h3>Projects</h3>
+</div>
 
 #### Clinic Management System [WIP]
 
@@ -45,7 +52,9 @@ Github: [link](https://github.com/rahimi-mohd/simple-minimal-todo-app.git)
 2. Web App version  
 Github: [link](https://github.com/rahimi-mohd/django-todo.git) 
 
-### Work Experiences
+<div class="title-font">
+    <h3>Work Experiences</h3>
+</div>
 
 #### Programmer at Aces-Ecer Jobs Train and Place
 
@@ -68,7 +77,9 @@ Even this is not IT job, I still manage to learn a lot of IT stuff. I learn how 
 2016 - 02-2017  
 My first ever job, I actually learn quite a lot here. The first task that I do here is to manage file room. This include in re-arrange all the file based on year, racks and re-record it in system. Maybe this is why I want to create a clinic management system for my diploma final year project. God know how hard it is to re-arrange thousand of files and re-record it. 
 
-### Interest
+<div class="title-font">
+    <h3>Interests</h3>
+</div>
 
 Beside my diploma final year project, I have to take other three courses which is:  
 1. Basics Of Linux,

@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
     <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="rahimi-mohd.github.io" />
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Django Get Initial Data In Forms | rahimi-mohd.github.io</title>
@@ -10,8 +15,8 @@
 <meta property="og:title" content="Django Get Initial Data In Forms" />
 <meta name="author" content="rahimi" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!" />
-<meta property="og:description" content="I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!" />
+<meta name="description" content="This is how you can get initial data--from models--and show it in form&#39;s field. I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!" />
+<meta property="og:description" content="This is how you can get initial data--from models--and show it in form&#39;s field. I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!" />
 <link rel="canonical" href="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html" />
 <meta property="og:url" content="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html" />
 <meta property="og:site_name" content="rahimi-mohd.github.io" />
@@ -20,7 +25,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Django Get Initial Data In Forms" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"rahimi"},"dateModified":"2024-08-31T00:00:00+08:00","datePublished":"2024-08-31T00:00:00+08:00","description":"I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!","headline":"Django Get Initial Data In Forms","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"},"url":"http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"rahimi"},"dateModified":"2024-08-31T00:00:00+08:00","datePublished":"2024-08-31T00:00:00+08:00","description":"This is how you can get initial data--from models--and show it in form&#39;s field. I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = &quot;clinic&quot; urlpatterns = [ path(&quot;checkin_list/&quot;, views.ListCheckInPageView.as_view(), name=&quot;checkin_list&quot;), ] clinic/views.py class ListCheckInPageView(ListView): template_name = &quot;clinic/checkin_list.html&quot; queryset = CheckIn.objects.all().order_by(&quot;-check_in_time&quot;) # this will display the latest on top context_object_name = &quot;checkin_list&quot; Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path(&quot;checkin_list/checkin/&quot; views.CheckInView.as_view(), name=&quot;checkin&quot;) ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = &quot;clinic/checkin_patient.html&quot; form_class = CheckInForm success_url = reverse_lazy(&quot;clinic:patient_list&quot;) def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path(&quot;patient_list/&lt;int:pk&gt;/checkin/&quot;, views.CheckInView.as_view(), name=&quot;checkin_pk&quot;) ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context[&quot;patient&quot;] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get(&quot;pk&quot;) if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial[&quot;patient&quot;] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!","headline":"Django Get Initial Data In Forms","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"},"url":"http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link rel="stylesheet" href="/assets/css/style.css">
@@ -28,6 +33,7 @@
     <!-- <link rel="stylesheet" href="/assets/css/styles.scss"> -->
     <title>Django Get Initial Data In Forms</title>
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -38,116 +44,104 @@
     
 </nav>
 
-    <h1>Django Get Initial Data In Forms</h1>
+    <div class="main-container">
+        <h1>Django Get Initial Data In Forms</h1>
 <p>31 Aug 2024 - rahimi</p>
 <hr>
 
+<div class="post-container">
+    <div class="tldr">
+    This is how you can get initial data--from models--and show it in form's field.
+</div>
 <p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
 
 <p>The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends <code class="language-plaintext highlighter-rouge">ListView</code>. Example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-...
-app_name = "clinic"
-urlpatterns = [
-    path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"),
-]
+<span class="p">...</span>
+<span class="n">app_name</span> <span class="o">=</span> <span class="s">"clinic"</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">ListCheckInPageView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_list"</span><span class="p">),</span>
+<span class="p">]</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
-
-class ListCheckInPageView(ListView):
-    template_name = "clinic/checkin_list.html"
-    queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top
-    context_object_name = "checkin_list"
-
-</code></pre></div></div>
+<span class="k">class</span> <span class="nc">ListCheckInPageView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_list.html"</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">CheckIn</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nb">all</span><span class="p">().</span><span class="n">order_by</span><span class="p">(</span><span class="s">"-check_in_time"</span><span class="p">)</span> <span class="c1"># this will display the latest on top
+</span>    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">"checkin_list"</span></code></pre></figure>
 
 <hr />
 
 <p>Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin")
+<span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/checkin/"</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin"</span><span class="p">)</span>
 
-... end new code
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_patient.html"</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">CheckInForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">"clinic:patient_list"</span><span class="p">)</span>
 
-class CheckInView(FormView):
-    template_name = "clinic/checkin_patient.html"
-    form_class = CheckInForm
-    success_url = reverse_lazy("clinic:patient_list")
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="n">form</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
-    def form_valid(self, form):
-    form.save()
-    return super().form_valid(form)
-
-    ... end new code
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <hr />
 
 <p>To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("patient_list/&lt;int:pk&gt;/checkin/", views.CheckInView.as_view(), name="checkin_pk")
+<span class="n">path</span><span class="p">(</span><span class="s">"patient_list/&lt;int:pk&gt;/checkin/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_pk"</span><span class="p">)</span>
 
-... end new code
-
-</code></pre></div></div>
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-...
+<span class="p">...</span>
 
-class CheckInView(FormView):
-    ... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            context["patient"] = patient 
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span> 
 
-        return context
+        <span class="k">return</span> <span class="n">context</span>
     
 
-    def get_initial(self):
-        initial = super().get_initial()
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">initial</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_initial</span><span class="p">()</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            initial["patient"] = patient
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">initial</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span>
 
-        return initial
+        <span class="k">return</span> <span class="n">initial</span>
 
-    ... end new code
-
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is <code class="language-plaintext highlighter-rouge">patient_list/1/checkin/</code>, we’ll use the data from patient with primary key = 1 to fill the form.</p>
 
@@ -155,6 +149,9 @@ class CheckInView(FormView):
 
 <p>…CYA!</p>
 
+</div>
+    </div>
 
 </body>
+
 </html>

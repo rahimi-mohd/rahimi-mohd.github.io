@@ -1,115 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-09-28T11:45:19+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">rahimi-mohd.github.io</title><entry><title type="html">Django Get Initial Data In Forms</title><link href="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html" rel="alternate" type="text/html" title="Django Get Initial Data In Forms" /><published>2024-08-31T00:00:00+08:00</published><updated>2024-08-31T00:00:00+08:00</updated><id>http://localhost:4000/2024/08/31/django-get-initial-data-in-forms</id><content type="html" xml:base="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"><![CDATA[<p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-09-30T20:03:27+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">rahimi-mohd.github.io</title><entry><title type="html">Django Get Initial Data In Forms</title><link href="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html" rel="alternate" type="text/html" title="Django Get Initial Data In Forms" /><published>2024-08-31T00:00:00+08:00</published><updated>2024-08-31T00:00:00+08:00</updated><id>http://localhost:4000/2024/08/31/django-get-initial-data-in-forms</id><content type="html" xml:base="http://localhost:4000/2024/08/31/django-get-initial-data-in-forms.html"><![CDATA[<div class="tldr">
+    This is how you can get initial data--from models--and show it in form's field.
+</div>
+<p>I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).</p>
 
 <p>The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends <code class="language-plaintext highlighter-rouge">ListView</code>. Example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-...
-app_name = "clinic"
-urlpatterns = [
-    path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"),
-]
+<span class="p">...</span>
+<span class="n">app_name</span> <span class="o">=</span> <span class="s">"clinic"</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">ListCheckInPageView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_list"</span><span class="p">),</span>
+<span class="p">]</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
-
-class ListCheckInPageView(ListView):
-    template_name = "clinic/checkin_list.html"
-    queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top
-    context_object_name = "checkin_list"
-
-</code></pre></div></div>
+<span class="k">class</span> <span class="nc">ListCheckInPageView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_list.html"</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">CheckIn</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nb">all</span><span class="p">().</span><span class="n">order_by</span><span class="p">(</span><span class="s">"-check_in_time"</span><span class="p">)</span> <span class="c1"># this will display the latest on top
+</span>    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">"checkin_list"</span></code></pre></figure>
 
 <hr />
 
 <p>Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin")
+<span class="n">path</span><span class="p">(</span><span class="s">"checkin_list/checkin/"</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin"</span><span class="p">)</span>
 
-... end new code
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">"clinic/checkin_patient.html"</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">CheckInForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">"clinic:patient_list"</span><span class="p">)</span>
 
-class CheckInView(FormView):
-    template_name = "clinic/checkin_patient.html"
-    form_class = CheckInForm
-    success_url = reverse_lazy("clinic:patient_list")
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="n">form</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
-    def form_valid(self, form):
-    form.save()
-    return super().form_valid(form)
-
-    ... end new code
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <hr />
 
 <p>To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/urls.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">urls</span><span class="p">.</span><span class="n">py</span>
 
-... new code
+<span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-path("patient_list/&lt;int:pk&gt;/checkin/", views.CheckInView.as_view(), name="checkin_pk")
+<span class="n">path</span><span class="p">(</span><span class="s">"patient_list/&lt;int:pk&gt;/checkin/"</span><span class="p">,</span> <span class="n">views</span><span class="p">.</span><span class="n">CheckInView</span><span class="p">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">"checkin_pk"</span><span class="p">)</span>
 
-... end new code
-
-</code></pre></div></div>
+<span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-clinic/views.py
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">clinic</span><span class="o">/</span><span class="n">views</span><span class="p">.</span><span class="n">py</span>
 
-...
+<span class="p">...</span>
 
-class CheckInView(FormView):
-    ... new code
+<span class="k">class</span> <span class="nc">CheckInView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="p">...</span> <span class="n">new</span> <span class="n">code</span>
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            context["patient"] = patient 
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span> 
 
-        return context
+        <span class="k">return</span> <span class="n">context</span>
     
 
-    def get_initial(self):
-        initial = super().get_initial()
-        patient_pk = self.kwargs.get("pk")
+    <span class="k">def</span> <span class="nf">get_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">initial</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">get_initial</span><span class="p">()</span>
+        <span class="n">patient_pk</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">kwargs</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"pk"</span><span class="p">)</span>
 
-        if patient_pk:
-            patient = get_object_or_404(Patient, pk=patient_pk)
-            initial["patient"] = patient
+        <span class="k">if</span> <span class="n">patient_pk</span><span class="p">:</span>
+            <span class="n">patient</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Patient</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">patient_pk</span><span class="p">)</span>
+            <span class="n">initial</span><span class="p">[</span><span class="s">"patient"</span><span class="p">]</span> <span class="o">=</span> <span class="n">patient</span>
 
-        return initial
+        <span class="k">return</span> <span class="n">initial</span>
 
-    ... end new code
-
-</code></pre></div></div>
+    <span class="p">...</span> <span class="n">end</span> <span class="n">new</span> <span class="n">code</span></code></pre></figure>
 
 <p>What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is <code class="language-plaintext highlighter-rouge">patient_list/1/checkin/</code>, we’ll use the data from patient with primary key = 1 to fill the form.</p>
 
 <p>This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch.</p>
 
-<p>…CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = "clinic" urlpatterns = [ path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"), ] clinic/views.py class ListCheckInPageView(ListView): template_name = "clinic/checkin_list.html" queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top context_object_name = "checkin_list" Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin") ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = "clinic/checkin_patient.html" form_class = CheckInForm success_url = reverse_lazy("clinic:patient_list") def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path("patient_list/&lt;int:pk&gt;/checkin/", views.CheckInView.as_view(), name="checkin_pk") ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get("pk") if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context["patient"] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get("pk") if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial["patient"] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!]]></summary></entry><entry><title type="html">Move To Jekyll</title><link href="http://localhost:4000/2024/08/26/move-to-jekyll.html" rel="alternate" type="text/html" title="Move To Jekyll" /><published>2024-08-26T00:00:00+08:00</published><updated>2024-08-26T00:00:00+08:00</updated><id>http://localhost:4000/2024/08/26/move-to-jekyll</id><content type="html" xml:base="http://localhost:4000/2024/08/26/move-to-jekyll.html"><![CDATA[<p><strong>Hello, Jekyll!</strong> I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my <code class="language-plaintext highlighter-rouge">base.html</code>–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know).</p>
+<p>…CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[This is how you can get initial data--from models--and show it in form's field. I’m on the journey to finish my diploma Final Year Project, I’ll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV). The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends ListView. Example: clinic/urls.py ... app_name = "clinic" urlpatterns = [ path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"), ] clinic/views.py class ListCheckInPageView(ListView): template_name = "clinic/checkin_list.html" queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top context_object_name = "checkin_list" Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example: clinic/urls.py ... new code path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin") ... end new code clinic/views.py ... new code class CheckInView(FormView): template_name = "clinic/checkin_patient.html" form_class = CheckInForm success_url = reverse_lazy("clinic:patient_list") def form_valid(self, form): form.save() return super().form_valid(form) ... end new code To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. clinic/urls.py ... new code path("patient_list/&lt;int:pk&gt;/checkin/", views.CheckInView.as_view(), name="checkin_pk") ... end new code Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here’s what I’ve learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this: clinic/views.py ... class CheckInView(FormView): ... new code def get_context_data(self, **kwargs): context = super().get_context_data(**kwargs) patient_pk = self.kwargs.get("pk") if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) context["patient"] = patient return context def get_initial(self): initial = super().get_initial() patient_pk = self.kwargs.get("pk") if patient_pk: patient = get_object_or_404(Patient, pk=patient_pk) initial["patient"] = patient return initial ... end new code What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let’s say our url now is patient_list/1/checkin/, we’ll use the data from patient with primary key = 1 to fill the form. This logic actually can be use in many situation, what if you want to fill appointment list with the patient data ? Let’s say you’re the clinic staff, you open this patient detail page –say the name of the patient is Dave. Then you click add appointment, but the form need you to fill the patient data, by using the logic, you have to fill appointment description and date only, not fill it from scratch. …CYA!]]></summary></entry><entry><title type="html">Move To Jekyll</title><link href="http://localhost:4000/2024/08/26/move-to-jekyll.html" rel="alternate" type="text/html" title="Move To Jekyll" /><published>2024-08-26T00:00:00+08:00</published><updated>2024-08-26T00:00:00+08:00</updated><id>http://localhost:4000/2024/08/26/move-to-jekyll</id><content type="html" xml:base="http://localhost:4000/2024/08/26/move-to-jekyll.html"><![CDATA[<div class="tldr">
+    Jekyll have been working super fine for me now, I don't have any problem with it even when I try to set it up on different OS with different package manager (Debian based to Arch based).
+</div>
+
+<p><strong>Hello, Jekyll!</strong> I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my <code class="language-plaintext highlighter-rouge">base.html</code>–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know).</p>
 
 <p>So, what I’m looking for is a system or framework that can automate or render my writing into proper html, I try to use Emacs (org to html) and Obsidian (markdown to html) but I’ve never success with the templating system. Yes, I can export my writing into html but I struggle with the templating and styling.</p>
 
@@ -121,40 +111,34 @@ class CheckInView(FormView):
 
 <p>Install all the requirements</p>
 
-<p><code class="language-plaintext highlighter-rouge">$ sudo apt install ruby-full build-essential zlib1g-dev</code></p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">sudo </span>apt <span class="nb">install </span>ruby-full build-essential zlib1g-dev</code></pre></figure>
 
 <p>Add <code class="language-plaintext highlighter-rouge">GEM_HOME</code> and it executable path in <code class="language-plaintext highlighter-rouge">.bashrc</code></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-.bashrc
-GEM_HOME="$HOME/.gems"  # change .gems to gems if you don't want to hide it
-export PATH=$PATH:"$HOME/.gems.bin"
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">.bashrc
+<span class="nv">GEM_HOME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.gems"</span>  <span class="c"># change .gems to gems if you don't want to hide it</span>
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.gems.bin"</span></code></pre></figure>
 
 <p>Install jekyll and bundler</p>
 
-<p><code class="language-plaintext highlighter-rouge">$ gem install jekyll bundler</code></p>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">gem <span class="nb">install </span>jekyll bundler</code></pre></figure>
 
 <p>Okay, now we’re halfway through the process. We’ve install Ruby, jekyll, and bundler. Now come the fun part, creating our blog. Create a new folder where you want to put your blog, let’s called it <code class="language-plaintext highlighter-rouge">my-blog</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-$ mkdir -p Documents/my-blog    # create folder
-$ cd Documents/my-blog          # change direction into my-blog
-$ bundle init                   # create new Gemfile
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">mkdir</span> <span class="nt">-p</span> Documents/my-blog    <span class="c"># create folder</span>
+<span class="nb">cd </span>Documents/my-blog          <span class="c"># change direction into my-blog</span>
+bundle init                   <span class="c"># create new Gemfile</span></code></pre></figure>
 
 <p>To add jekyll as dependency, we have to add <code class="language-plaintext highlighter-rouge">gem "jekyll"</code> into Gemfile, and run <code class="language-plaintext highlighter-rouge">bundle</code> to install it. It’s also a good time to start commiting our development journey, let’s initialize a Git repository and commit it.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-$ git init
-$ vim .gitignore                        # change vim to any editor you comfortable with
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">git init
+vim .gitignore                        <span class="c"># change vim to any editor you comfortable with</span>
 
 .gitignore
-Gemfile.lock                            # this will prevent git to add Gemfile.lock into repository
+Gemfile.lock                            <span class="c"># this will prevent git to add Gemfile.lock into repository</span>
 
-$ git add .                             # add all files and folders into stage 
-$ git commit -m "initial blog setup"    # commit all changes
-</code></pre></div></div>
+git add <span class="nb">.</span>                             <span class="c"># add all files and folders into stage </span>
+git commit <span class="nt">-m</span> <span class="s2">"initial blog setup"</span>    <span class="c"># commit all changes</span></code></pre></figure>
 
 <p>We’re almost there, the last step before we can serve our website is to have a….. website, Duh!. Remember that we still didn’t write any HTML, let’s fix that by creating new <code class="language-plaintext highlighter-rouge">index.html</code> in root folder and write anything you want–this is not HTML tutorial. To start serving your website, run <code class="language-plaintext highlighter-rouge">$ jekyll serve</code> and open <code class="language-plaintext highlighter-rouge">http://localhost:4000</code> on your favorite web browser. Walla, here’s your magnificent, beautiful, little website ready to be seen by the entire world–Nah, just kidding, this only serve the website on your localhost port 4000, you have to deploy it to make it available to the entire world.</p>
 
@@ -164,16 +148,14 @@ $ git commit -m "initial blog setup"    # commit all changes
 
 <p>It’s obvious why I changed to jekyll, but the main reason is the templating system. I already familiar with jinja2 and Django template (I don’t know what they called Django template, so maybe just Django template?), to have this kind of system is the major improvement for any blogger–one more time, I’m not a <strong>blogger</strong> blogger, just a guy who like to write and want to improve his workflow. My old, plain, and traditional blogging system look like this</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-- index.html  
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">- index.html  
 - blogs/
     - base.html
     - blog1.html
     - blog2.html
 - statics
     - style.css
-    - app.js
-</code></pre></div></div>
+    - app.js</code></pre></figure>
 
 <p>I have to edit <code class="language-plaintext highlighter-rouge">base.html</code>, save it as <code class="language-plaintext highlighter-rouge">blog{n}.hmlt</code>, and index it in my index.html. Actually, it’s not so bad, but why not use templating system to make my life easier right ?</p>
 
@@ -193,29 +175,25 @@ $ git commit -m "initial blog setup"    # commit all changes
 
 <p>Install rbenv</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv
-$ ~/.rbenv/bin/rbenv init # initialize rbenv
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">git clone https://github.com/rbenv/rbenv.git ~/.rbenv <span class="c"># clone rbenv</span>
+~/.rbenv/bin/rbenv init <span class="c"># initialize rbenv</span></code></pre></figure>
 
 <p>For some reason, rbenv init command–second command–write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine.</p>
 
 <p>Install ruby-build</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p "$(rbenv root)"/plugins
-$ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-$ rbenv -v # this will return rbenv version if successfully installed
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="si">$(</span>rbenv root<span class="si">)</span><span class="s2">"</span>/plugins
+git clone https://github.com/rbenv/ruby-build.git <span class="s2">"</span><span class="si">$(</span>rbenv root<span class="si">)</span><span class="s2">"</span>/plugins/ruby-build
+rbenv <span class="nt">-v</span> <span class="c"># this will return rbenv version if successfully installed</span></code></pre></figure>
 
 <p>Then, we can install Ruby</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5
-$ rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">rbenv <span class="nb">install</span> <span class="o">{</span>ruby_version<span class="o">}</span> <span class="nt">--verbose</span> <span class="c"># change ruby_version into the version that you want, the latest during my installation is 3.3.5</span>
+rbenv global <span class="o">{</span>ruby_version<span class="o">}</span> <span class="c"># change ruby_version to the one that you install, this tell our system which Ruby we want to use</span></code></pre></figure>
 
 <p>Finally, check Ruby version for our system</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ruby -v # this should return ruby_version, in my case 3.3.5
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">ruby <span class="nt">-v</span> <span class="c"># this should return ruby_version, in my case 3.3.5</span></code></pre></figure>
 
 <p>Now, we can follow our initial setup above, starting from <strong>Add <code class="language-plaintext highlighter-rouge">GEM_HOME</code> and it executable path in <code class="language-plaintext highlighter-rouge">.bashrc</code></strong>.</p>
 
@@ -223,7 +201,11 @@ $ rbenv global {ruby_version} # change ruby_version to the one that you install,
 
 <p><strong>NOTE</strong> You also may or may not get error when trying to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, the solution is to run <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code>  instead. <strong>END</strong></p>
 
-<p>Have fun and…CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[Hello, Jekyll! I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my base.html–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know). So, what I’m looking for is a system or framework that can automate or render my writing into proper html, I try to use Emacs (org to html) and Obsidian (markdown to html) but I’ve never success with the templating system. Yes, I can export my writing into html but I struggle with the templating and styling. Now that I have some extra time to waste, I want to try jekyll and play around with it. First of all, we have to do some installation and setup before we can use jekyll. Setup I use Linux Mint for this setup, it will be different based on your operating system and distros. You actually can follow the step from jekyll’s Quickstart and Installation pages if you have any problems. Install all the requirements $ sudo apt install ruby-full build-essential zlib1g-dev Add GEM_HOME and it executable path in .bashrc .bashrc GEM_HOME="$HOME/.gems" # change .gems to gems if you don't want to hide it export PATH=$PATH:"$HOME/.gems.bin" Install jekyll and bundler $ gem install jekyll bundler Okay, now we’re halfway through the process. We’ve install Ruby, jekyll, and bundler. Now come the fun part, creating our blog. Create a new folder where you want to put your blog, let’s called it my-blog. $ mkdir -p Documents/my-blog # create folder $ cd Documents/my-blog # change direction into my-blog $ bundle init # create new Gemfile To add jekyll as dependency, we have to add gem "jekyll" into Gemfile, and run bundle to install it. It’s also a good time to start commiting our development journey, let’s initialize a Git repository and commit it. $ git init $ vim .gitignore # change vim to any editor you comfortable with .gitignore Gemfile.lock # this will prevent git to add Gemfile.lock into repository $ git add . # add all files and folders into stage $ git commit -m "initial blog setup" # commit all changes We’re almost there, the last step before we can serve our website is to have a….. website, Duh!. Remember that we still didn’t write any HTML, let’s fix that by creating new index.html in root folder and write anything you want–this is not HTML tutorial. To start serving your website, run $ jekyll serve and open http://localhost:4000 on your favorite web browser. Walla, here’s your magnificent, beautiful, little website ready to be seen by the entire world–Nah, just kidding, this only serve the website on your localhost port 4000, you have to deploy it to make it available to the entire world. Finally, remember that this is the most basic setup, you can follow the official step by step tutorial on jekyll website to get your website running and deploy it to github pages (like me) or maybe on your favorite cloud system or whatever, it’s your blog and you can do whatever you like with it. Reason It’s obvious why I changed to jekyll, but the main reason is the templating system. I already familiar with jinja2 and Django template (I don’t know what they called Django template, so maybe just Django template?), to have this kind of system is the major improvement for any blogger–one more time, I’m not a blogger blogger, just a guy who like to write and want to improve his workflow. My old, plain, and traditional blogging system look like this - index.html - blogs/ - base.html - blog1.html - blog2.html - statics - style.css - app.js I have to edit base.html, save it as blog{n}.hmlt, and index it in my index.html. Actually, it’s not so bad, but why not use templating system to make my life easier right ? Conclusion Actually, this is the second day I’m using jekyll–on the time I’m writing this post–so I can’t give more comment it pros and cons, and my experience using it, I will come back to it later. But for now, I’m excited to write more blog and to explore more about jekyll–theme? Finally, please, please, please excuse my website’s ugly interface, yeah I know it’s not beautiful (yet!), but I’m going to fix that later! Update - 28Sept2024 See, I have once more install Arch with i3wm and I need to re-setup jekyll. This time, I chose to use rbenv route to install Ruby, following the guide from The Odin Project. Here how you can do it too: Note: I already have base-devel installed, you may need to install it first. Install rbenv $ git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv $ ~/.rbenv/bin/rbenv init # initialize rbenv For some reason, rbenv init command–second command–write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine. Install ruby-build $ mkdir -p "$(rbenv root)"/plugins $ git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build $ rbenv -v # this will return rbenv version if successfully installed Then, we can install Ruby $ rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5 $ rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use Finally, check Ruby version for our system $ ruby -v # this should return ruby_version, in my case 3.3.5 Now, we can follow our initial setup above, starting from Add GEM_HOME and it executable path in .bashrc. NOTE Since this is updated setup, meaning that I already have my blog set up in github, I need to install several gems packages (or modules, I don’t know what you call it) such as pygments.rb, jekyll-sitemap, jekyll-feed, jekyll-seo-tags and github-pages. I installed all this packages with $ gem install {package_name} # change package_name with the needed packages. END NOTE You also may or may not get error when trying to run jekyll serve, the solution is to run bundle exec jekyll serve instead. END Have fun and…CYA!]]></summary></entry><entry><title type="html">Technical Interview</title><link href="http://localhost:4000/2024/01/22/technical-interview.html" rel="alternate" type="text/html" title="Technical Interview" /><published>2024-01-22T00:00:00+08:00</published><updated>2024-01-22T00:00:00+08:00</updated><id>http://localhost:4000/2024/01/22/technical-interview</id><content type="html" xml:base="http://localhost:4000/2024/01/22/technical-interview.html"><![CDATA[<p>Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen.</p>
+<p>Have fun and…CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[Jekyll have been working super fine for me now, I don't have any problem with it even when I try to set it up on different OS with different package manager (Debian based to Arch based). Hello, Jekyll! I actually really love to write and blog, the reason why I’m not updating my blog is because it’s pain in the ass to copy and paste my base.html–kinda like a template system for my blog. I actually heard about jekyll a long way back, but I don’t have time to try it (or maybe I’m lazy, I don’t know). So, what I’m looking for is a system or framework that can automate or render my writing into proper html, I try to use Emacs (org to html) and Obsidian (markdown to html) but I’ve never success with the templating system. Yes, I can export my writing into html but I struggle with the templating and styling. Now that I have some extra time to waste, I want to try jekyll and play around with it. First of all, we have to do some installation and setup before we can use jekyll. Setup I use Linux Mint for this setup, it will be different based on your operating system and distros. You actually can follow the step from jekyll’s Quickstart and Installation pages if you have any problems. Install all the requirements sudo apt install ruby-full build-essential zlib1g-dev Add GEM_HOME and it executable path in .bashrc .bashrc GEM_HOME="$HOME/.gems" # change .gems to gems if you don't want to hide it export PATH=$PATH:"$HOME/.gems.bin" Install jekyll and bundler gem install jekyll bundler Okay, now we’re halfway through the process. We’ve install Ruby, jekyll, and bundler. Now come the fun part, creating our blog. Create a new folder where you want to put your blog, let’s called it my-blog. mkdir -p Documents/my-blog # create folder cd Documents/my-blog # change direction into my-blog bundle init # create new Gemfile To add jekyll as dependency, we have to add gem "jekyll" into Gemfile, and run bundle to install it. It’s also a good time to start commiting our development journey, let’s initialize a Git repository and commit it. git init vim .gitignore # change vim to any editor you comfortable with .gitignore Gemfile.lock # this will prevent git to add Gemfile.lock into repository git add . # add all files and folders into stage git commit -m "initial blog setup" # commit all changes We’re almost there, the last step before we can serve our website is to have a….. website, Duh!. Remember that we still didn’t write any HTML, let’s fix that by creating new index.html in root folder and write anything you want–this is not HTML tutorial. To start serving your website, run $ jekyll serve and open http://localhost:4000 on your favorite web browser. Walla, here’s your magnificent, beautiful, little website ready to be seen by the entire world–Nah, just kidding, this only serve the website on your localhost port 4000, you have to deploy it to make it available to the entire world. Finally, remember that this is the most basic setup, you can follow the official step by step tutorial on jekyll website to get your website running and deploy it to github pages (like me) or maybe on your favorite cloud system or whatever, it’s your blog and you can do whatever you like with it. Reason It’s obvious why I changed to jekyll, but the main reason is the templating system. I already familiar with jinja2 and Django template (I don’t know what they called Django template, so maybe just Django template?), to have this kind of system is the major improvement for any blogger–one more time, I’m not a blogger blogger, just a guy who like to write and want to improve his workflow. My old, plain, and traditional blogging system look like this - index.html - blogs/ - base.html - blog1.html - blog2.html - statics - style.css - app.js I have to edit base.html, save it as blog{n}.hmlt, and index it in my index.html. Actually, it’s not so bad, but why not use templating system to make my life easier right ? Conclusion Actually, this is the second day I’m using jekyll–on the time I’m writing this post–so I can’t give more comment it pros and cons, and my experience using it, I will come back to it later. But for now, I’m excited to write more blog and to explore more about jekyll–theme? Finally, please, please, please excuse my website’s ugly interface, yeah I know it’s not beautiful (yet!), but I’m going to fix that later! Update - 28Sept2024 See, I have once more install Arch with i3wm and I need to re-setup jekyll. This time, I chose to use rbenv route to install Ruby, following the guide from The Odin Project. Here how you can do it too: Note: I already have base-devel installed, you may need to install it first. Install rbenv git clone https://github.com/rbenv/rbenv.git ~/.rbenv # clone rbenv ~/.rbenv/bin/rbenv init # initialize rbenv For some reason, rbenv init command–second command–write the script into .bash_profle and my system cannot read it (or find it), so how I fixed it is by pasting the script to my .bashrc and it work fine. Install ruby-build mkdir -p "$(rbenv root)"/plugins git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build rbenv -v # this will return rbenv version if successfully installed Then, we can install Ruby rbenv install {ruby_version} --verbose # change ruby_version into the version that you want, the latest during my installation is 3.3.5 rbenv global {ruby_version} # change ruby_version to the one that you install, this tell our system which Ruby we want to use Finally, check Ruby version for our system ruby -v # this should return ruby_version, in my case 3.3.5 Now, we can follow our initial setup above, starting from Add GEM_HOME and it executable path in .bashrc. NOTE Since this is updated setup, meaning that I already have my blog set up in github, I need to install several gems packages (or modules, I don’t know what you call it) such as pygments.rb, jekyll-sitemap, jekyll-feed, jekyll-seo-tags and github-pages. I installed all this packages with $ gem install {package_name} # change package_name with the needed packages. END NOTE You also may or may not get error when trying to run jekyll serve, the solution is to run bundle exec jekyll serve instead. END Have fun and…CYA!]]></summary></entry><entry><title type="html">Technical Interview</title><link href="http://localhost:4000/2024/01/22/technical-interview.html" rel="alternate" type="text/html" title="Technical Interview" /><published>2024-01-22T00:00:00+08:00</published><updated>2024-01-22T00:00:00+08:00</updated><id>http://localhost:4000/2024/01/22/technical-interview</id><content type="html" xml:base="http://localhost:4000/2024/01/22/technical-interview.html"><![CDATA[<div class="tldr">
+    Well, my first ever technical interview which obviously I failed.
+</div>
+
+<p>Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen.</p>
 
 <p>To my suprise, there’s some companies who reach back and want to interview me. Unfortunately, I have to reject one interview (backend/embedded engineer), due to it being too far from my home and they didn’t allowed work from home. Actually, I don’t care about working from office, I just don’t want to spend half of my day on the road commuting from home to office and back.</p>
 
@@ -250,10 +232,10 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def unique_names(l: list[str], ll: list[int]) -&gt; list[int]:
-        names = l + ll
-        return list(set(names))
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">unique_names</span><span class="p">(</span><span class="n">l</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ll</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="n">ll</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">))</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-two">Question Two:</h3>
@@ -262,13 +244,13 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer:</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    import math
-    def find_roots(a: int, b: int, c: int) -&gt; list[int]:
-        d = math.sqrt(b**2 - 4 * a * c)
-        root_1 = (-b + d) / (2 * a)
-        root_2 = (-b - d) / (2 * a)
-        return [root_1, root_2]
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">math</span>
+<span class="k">def</span> <span class="nf">find_roots</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">math</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">root_1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">root_2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">root_1</span><span class="p">,</span> <span class="n">root_2</span><span class="p">]</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-three">Question Three:</h3>
@@ -277,22 +259,22 @@ should return [“emma”, “olivia”, “sophia”]</p>
 
 <p><strong>My answer:</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    files = {
-        "Input.txt" : "Randy",
-        "Code.py" : "Stan",
-        "Output.txt" : "Randy"
-    }
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">"Input.txt"</span> <span class="p">:</span> <span class="s">"Randy"</span><span class="p">,</span>
+    <span class="s">"Code.py"</span> <span class="p">:</span> <span class="s">"Stan"</span><span class="p">,</span>
+    <span class="s">"Output.txt"</span> <span class="p">:</span> <span class="s">"Randy"</span>
+<span class="p">}</span>
 
-    def group_by_owner(files: dict) -&gt; dict:
-        m = {}
-        for k, v in files.item():
-            if v not in m:
-                m[v] = [k]
-            else:
-                m[v].append(k)
-        
-        return m
-</code></pre></div></div>
+<span class="k">def</span> <span class="nf">group_by_owner</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">files</span><span class="p">.</span><span class="n">item</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span><span class="p">[</span><span class="n">v</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">m</span></code></pre></figure>
+
 <hr />
 
 <h3 id="question-four">Question Four:</h3>
@@ -302,51 +284,53 @@ Implement NumericInput class that inherit from TextInput, override the add metho
 
 <p><strong>My answer</strong></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    class TextInput:
-        def __init__(self):
-            self.value = ""
-        def add(self, text):
-            self.value = text    
-        def get_value(self):
-            return self.value
-    class NumericInput(TextInput):
-        def add(self, text):
-        if text.isdigit():
-            self.value += text
-</code></pre></div></div>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TextInput</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="s">""</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">text</span>    
+    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">value</span>
+<span class="k">class</span> <span class="nc">NumericInput</span><span class="p">(</span><span class="n">TextInput</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">text</span><span class="p">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">value</span> <span class="o">+=</span> <span class="n">text</span></code></pre></figure>
+
 <hr />
 
 <h3 id="conclusion">Conclusion</h3>
 
 <p>I know, the questions were easy and it should really be a problem. I guess everybody have this <em>first-time-syndrome</em>, where they’re easily panic and can’t focus to think clearly. Other reason why I’m panic is because I have this expectation that they will give me LeetCode’s style of question and that make me panic even before I see the questions.</p>
 
-<p>So yeah, that’s my first ever technical interview experiences, even though I don’t have high expectation regarding the result, I’ll be lying if I say that I don’t want it to pass. Finally, there’s alot to learn and to be improve in the future, let’s try our best to get what we want and …CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen. To my suprise, there’s some companies who reach back and want to interview me. Unfortunately, I have to reject one interview (backend/embedded engineer), due to it being too far from my home and they didn’t allowed work from home. Actually, I don’t care about working from office, I just don’t want to spend half of my day on the road commuting from home to office and back. There’s one more company for backend engineer internship approached and asked me to fill a Google Form regarding my details and tech stack. So I fill out the form and… I don’t know maybe they’re ok with my details and tech stack so they asked me to attend IQ test and technical test on wed, 17 Jan 2024. So this is my first technical interview experiences. I have two and a half day to prepare for my first technical test, first thing that come to mind is LeetCode. I have never tried LeetCode before and I know I suck at problem solving, this is because I spend too much time on learning programming languages instead of learning programming and problem solving. I can solved two sum with two for loops but I know, this is not the optimum answer, then I study the solution which using map or dictionary. I realized now that I’m suck at problem solving and I need to study more. I don’t know what to expect for my interview, I just hope that they didn’t have this kind of questions. During the interview, there’s only one person and she didn’t asked me too many question since this is not behavioral interview, so she just asked me to introduced myself and I can start if I’m ready. When I said I’m ready, she shared with me the IQ test questions and I have to share my screen to answer the questions, they were all subjective questions where you have to think about the answer and there’s no hint. I guess I can answer most of them, even though I don’t know how IQ test work and I don’t even know if my answers are correct or not. What shock me the most is that I have to really write the answer for IQ test, I thought all IQ test use Multi Choice Question (MCQ) format but not this time I guess. After IQ test, we go straight to technical test. So the questions are not too bad, it just….. I blank. I’m not sure how to describe the situation but I can’t think straight and I kinda lost it. So I have a choice whether to write complete code in python or just write pseudocode, obviously this will affect the mark –since they are looking for python developer. The problem happened when I tried to write python code for question one but when I run it, it doesn’t do what it’s supposed to do, so I panicked and I think that’s the reason why I can’t answer most of the questions. When I checked back the questions after the interview, I started to laugh out loud and think “what the heck is wrong with me, how can I be so stupid ?”.” Here are the questions and how I solved it after the interview, I can’t remember how I answer it during the interview because I give up writing the answer in python after it failed to run as intended for question one. I guess I got it all right using pseudocode but who know ? Maybe they will review it back with me later. Notes All the question have been changed to make it shorter, and the answer is not the answer I write during the interview, this is the answer I think of after the interview. END Question One Given two list of names, return new list without duplicate values. Example: name_1 = [“ava”, “olivia”, “emma”] name_2 = [“olivia”, “sophia”, “emma”] unique_names(name_1, name_2) should return [“emma”, “olivia”, “sophia”] My answer def unique_names(l: list[str], ll: list[int]) -&gt; list[int]: names = l + ll return list(set(names)) Question Two: Create a function find_roots to find the roots of the quadratic equation: ax**2 + bx + c = 0. You can find the formula for the roots of the quadratic equation here. My answer: import math def find_roots(a: int, b: int, c: int) -&gt; list[int]: d = math.sqrt(b**2 - 4 * a * c) root_1 = (-b + d) / (2 * a) root_2 = (-b - d) / (2 * a) return [root_1, root_2] Question Three: Given a files with key value of k: text_file_name, v: name, return a map of k: name, v: list_of_text_file_name. My answer: files = { "Input.txt" : "Randy", "Code.py" : "Stan", "Output.txt" : "Randy" } def group_by_owner(files: dict) -&gt; dict: m = {} for k, v in files.item(): if v not in m: m[v] = [k] else: m[v].append(k) return m Question Four: Implement TextInput class that contains method add(text), which add given text to the current value. Method get_value(), which return the current value in string Implement NumericInput class that inherit from TextInput, override the add method so that each non-numeric text is ignored. My answer class TextInput: def __init__(self): self.value = "" def add(self, text): self.value = text def get_value(self): return self.value class NumericInput(TextInput): def add(self, text): if text.isdigit(): self.value += text Conclusion I know, the questions were easy and it should really be a problem. I guess everybody have this first-time-syndrome, where they’re easily panic and can’t focus to think clearly. Other reason why I’m panic is because I have this expectation that they will give me LeetCode’s style of question and that make me panic even before I see the questions. So yeah, that’s my first ever technical interview experiences, even though I don’t have high expectation regarding the result, I’ll be lying if I say that I don’t want it to pass. Finally, there’s alot to learn and to be improve in the future, let’s try our best to get what we want and …CYA!]]></summary></entry><entry><title type="html">Programming</title><link href="http://localhost:4000/2023/10/31/programming.html" rel="alternate" type="text/html" title="Programming" /><published>2023-10-31T00:00:00+08:00</published><updated>2023-10-31T00:00:00+08:00</updated><id>http://localhost:4000/2023/10/31/programming</id><content type="html" xml:base="http://localhost:4000/2023/10/31/programming.html"><![CDATA[<p>I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then.</p>
+<p>So yeah, that’s my first ever technical interview experiences, even though I don’t have high expectation regarding the result, I’ll be lying if I say that I don’t want it to pass. Finally, there’s alot to learn and to be improve in the future, let’s try our best to get what we want and …CYA!</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[Well, my first ever technical interview which obviously I failed. Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I’m already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don’t have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen. To my suprise, there’s some companies who reach back and want to interview me. Unfortunately, I have to reject one interview (backend/embedded engineer), due to it being too far from my home and they didn’t allowed work from home. Actually, I don’t care about working from office, I just don’t want to spend half of my day on the road commuting from home to office and back. There’s one more company for backend engineer internship approached and asked me to fill a Google Form regarding my details and tech stack. So I fill out the form and… I don’t know maybe they’re ok with my details and tech stack so they asked me to attend IQ test and technical test on wed, 17 Jan 2024. So this is my first technical interview experiences. I have two and a half day to prepare for my first technical test, first thing that come to mind is LeetCode. I have never tried LeetCode before and I know I suck at problem solving, this is because I spend too much time on learning programming languages instead of learning programming and problem solving. I can solved two sum with two for loops but I know, this is not the optimum answer, then I study the solution which using map or dictionary. I realized now that I’m suck at problem solving and I need to study more. I don’t know what to expect for my interview, I just hope that they didn’t have this kind of questions. During the interview, there’s only one person and she didn’t asked me too many question since this is not behavioral interview, so she just asked me to introduced myself and I can start if I’m ready. When I said I’m ready, she shared with me the IQ test questions and I have to share my screen to answer the questions, they were all subjective questions where you have to think about the answer and there’s no hint. I guess I can answer most of them, even though I don’t know how IQ test work and I don’t even know if my answers are correct or not. What shock me the most is that I have to really write the answer for IQ test, I thought all IQ test use Multi Choice Question (MCQ) format but not this time I guess. After IQ test, we go straight to technical test. So the questions are not too bad, it just….. I blank. I’m not sure how to describe the situation but I can’t think straight and I kinda lost it. So I have a choice whether to write complete code in python or just write pseudocode, obviously this will affect the mark –since they are looking for python developer. The problem happened when I tried to write python code for question one but when I run it, it doesn’t do what it’s supposed to do, so I panicked and I think that’s the reason why I can’t answer most of the questions. When I checked back the questions after the interview, I started to laugh out loud and think “what the heck is wrong with me, how can I be so stupid ?”.” Here are the questions and how I solved it after the interview, I can’t remember how I answer it during the interview because I give up writing the answer in python after it failed to run as intended for question one. I guess I got it all right using pseudocode but who know ? Maybe they will review it back with me later. Notes All the question have been changed to make it shorter, and the answer is not the answer I write during the interview, this is the answer I think of after the interview. END Question One Given two list of names, return new list without duplicate values. Example: name_1 = [“ava”, “olivia”, “emma”] name_2 = [“olivia”, “sophia”, “emma”] unique_names(name_1, name_2) should return [“emma”, “olivia”, “sophia”] My answer def unique_names(l: list[str], ll: list[int]) -&gt; list[int]: names = l + ll return list(set(names)) Question Two: Create a function find_roots to find the roots of the quadratic equation: ax**2 + bx + c = 0. You can find the formula for the roots of the quadratic equation here. My answer: import math def find_roots(a: int, b: int, c: int) -&gt; list[int]: d = math.sqrt(b**2 - 4 * a * c) root_1 = (-b + d) / (2 * a) root_2 = (-b - d) / (2 * a) return [root_1, root_2] Question Three: Given a files with key value of k: text_file_name, v: name, return a map of k: name, v: list_of_text_file_name. My answer: files = { "Input.txt" : "Randy", "Code.py" : "Stan", "Output.txt" : "Randy" } def group_by_owner(files: dict) -&gt; dict: m = {} for k, v in files.item(): if v not in m: m[v] = [k] else: m[v].append(k) return m Question Four: Implement TextInput class that contains method add(text), which add given text to the current value. Method get_value(), which return the current value in string Implement NumericInput class that inherit from TextInput, override the add method so that each non-numeric text is ignored. My answer class TextInput: def __init__(self): self.value = "" def add(self, text): self.value = text def get_value(self): return self.value class NumericInput(TextInput): def add(self, text): if text.isdigit(): self.value += text Conclusion I know, the questions were easy and it should really be a problem. I guess everybody have this first-time-syndrome, where they’re easily panic and can’t focus to think clearly. Other reason why I’m panic is because I have this expectation that they will give me LeetCode’s style of question and that make me panic even before I see the questions. So yeah, that’s my first ever technical interview experiences, even though I don’t have high expectation regarding the result, I’ll be lying if I say that I don’t want it to pass. Finally, there’s alot to learn and to be improve in the future, let’s try our best to get what we want and …CYA!]]></summary></entry><entry><title type="html">Programming</title><link href="http://localhost:4000/2023/10/31/programming.html" rel="alternate" type="text/html" title="Programming" /><published>2023-10-31T00:00:00+08:00</published><updated>2023-10-31T00:00:00+08:00</updated><id>http://localhost:4000/2023/10/31/programming</id><content type="html" xml:base="http://localhost:4000/2023/10/31/programming.html"><![CDATA[<div class="tldr">
+    This is a brief history on how I start to learn program and what make me want to learn more about technology and programming in general.
+</div>
+
+<p>I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then.</p>
 
 <p>Don’t get me wrong, it’s not like I’m a pro coder now, or I’ve built some life changing applications, it’s just I really love coding and learn new programming languages. The first programming language that I learn back then was C++ and guess what? I failed. I didn’t make it pass variable section because I was very busy back then with my full time hob and life responsibilities (<strong>C++ was very hard too</strong>).</p>
 
 <p>The first C++ code I wrote is this simple profit calculator, life changing right ?!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-int main() {
-    string whatToSell;
-    float capitalMoney;
-    float todaySales;
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">whatToSell</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">capitalMoney</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">todaySales</span><span class="p">;</span>
 
-    cout &lt;&lt; "Tell me what do you want to sell: ";
-    cin &gt;&gt; whatToSell;
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Tell me what do you want to sell: "</span><span class="p">;</span>
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">whatToSell</span><span class="p">;</span>
     
-    cout &lt;&lt; "This is your " &lt;&lt; whatToSell &lt;&lt; " business calculator\n";
-    cout &lt;&lt; "Enter your entry money: ";
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"This is your "</span> <span class="o">&lt;&lt;</span> <span class="n">whatToSell</span> <span class="o">&lt;&lt;</span> <span class="s">" business calculator</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Enter your entry money: "</span><span class="p">;</span>
 
-    cin &gt;&gt; capitalMoney;
-    cout &lt;&lt; "Enter today sales: ";
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">capitalMoney</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Enter today sales: "</span><span class="p">;</span>
 
-    cin &gt;&gt; todaySales;
-    cout &lt;&lt; "Your profit for today is " &lt;&lt; todaySales - capitalMoney&lt;&lt; ".";
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">todaySales</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Your profit for today is "</span> <span class="o">&lt;&lt;</span> <span class="n">todaySales</span> <span class="o">-</span> <span class="n">capitalMoney</span><span class="o">&lt;&lt;</span> <span class="s">"."</span><span class="p">;</span>
 
-    return 0;
-}
-</code></pre></div></div>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
 
 <p>I stop programming for awhile and then came back with Python, that’s the best time of my life and I really enjoy the learning process, I learn most of programming concept by learning python. I learn about variable, loop, function, oop and many more. This is not an advertisement or promoting Python programming language, but I really recommend people who want to learn programming to learn Python. This is because it help to teach you the concept of programming language properly, after that, you can move on to any language that you like. For people who like web development especially frontend, you can start by learning javascript.</p>
 
@@ -358,7 +342,7 @@ int main() {
 
 <p>I still learn Python in my free time, I’ve start to get into backend development using Django (To-Do apps incoming :p).</p>
 
-<p>Self Reminder: Remember to touch grass one in a while.</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then. Don’t get me wrong, it’s not like I’m a pro coder now, or I’ve built some life changing applications, it’s just I really love coding and learn new programming languages. The first programming language that I learn back then was C++ and guess what? I failed. I didn’t make it pass variable section because I was very busy back then with my full time hob and life responsibilities (C++ was very hard too). The first C++ code I wrote is this simple profit calculator, life changing right ?! int main() { string whatToSell; float capitalMoney; float todaySales; cout &lt;&lt; "Tell me what do you want to sell: "; cin &gt;&gt; whatToSell; cout &lt;&lt; "This is your " &lt;&lt; whatToSell &lt;&lt; " business calculator\n"; cout &lt;&lt; "Enter your entry money: "; cin &gt;&gt; capitalMoney; cout &lt;&lt; "Enter today sales: "; cin &gt;&gt; todaySales; cout &lt;&lt; "Your profit for today is " &lt;&lt; todaySales - capitalMoney&lt;&lt; "."; return 0; } I stop programming for awhile and then came back with Python, that’s the best time of my life and I really enjoy the learning process, I learn most of programming concept by learning python. I learn about variable, loop, function, oop and many more. This is not an advertisement or promoting Python programming language, but I really recommend people who want to learn programming to learn Python. This is because it help to teach you the concept of programming language properly, after that, you can move on to any language that you like. For people who like web development especially frontend, you can start by learning javascript. While learning Python, I heard about Linux and I become curious, really curious. I started to dig more about Linux, I have my own computer that time (late of 2019) and I installed Ubuntu out of curiosity, I never looked back at Windows since then. I don’t remember what version of Ubuntu I used back then, but I installed the latest version (non lts) and I really love it back then, it run smooth, there’s so many things to do and I really love learning about it. I started to learn about command line and the power of it, how I can use my computer with only command line. Linux is becoming my new best friend that time. The problem is, I have this new addiction which is Linux, I started to distro hopped a lot, and well, I kinda stop learning programming and start to try various flavor of distros available. After many years, I have this realization that it’s actually not about the distro, it’s more about the desktop environment. I’m most comfortable with Cinnamon and Xfce DE but I use i3 the most. The reason is because it help to improve my workflow. Now, I really want to get back into programming. So last year, I register with one of the university in my country for diploma in information technology (part time). I learn a ton of new things such as computer architecture, operation system, mathematic for IT and many more technology stuff, but they only teach the basic of programming using C and Java. I heard about Rust and look into it, it is really interesting and I planned to learn it during semester break, I can’t learn it now as I have to finish my assignment and prepare for my final exam (school huh?). I still learn Python in my free time, I’ve start to get into backend development using Django (To-Do apps incoming :p). Self Reminder: Remember to touch grass one in a while.]]></summary></entry><entry><title type="html">Arch Linux</title><link href="http://localhost:4000/2023/10/01/arch-linux.html" rel="alternate" type="text/html" title="Arch Linux" /><published>2023-10-01T00:00:00+08:00</published><updated>2023-10-01T00:00:00+08:00</updated><id>http://localhost:4000/2023/10/01/arch-linux</id><content type="html" xml:base="http://localhost:4000/2023/10/01/arch-linux.html"><![CDATA[<p><strong>I use Arch BTW!</strong></p>
+<p>Self Reminder: Remember to touch grass once in a while.</p>]]></content><author><name>rahimi</name></author><summary type="html"><![CDATA[This is a brief history on how I start to learn program and what make me want to learn more about technology and programming in general. I started learning how to programming back in 2019, when I’m nearly 30 years old. I always think that I’m kinda late into the game and that’s one of the thing that I regret in life, among others. I’ve always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I’ve never learn programming back then. Don’t get me wrong, it’s not like I’m a pro coder now, or I’ve built some life changing applications, it’s just I really love coding and learn new programming languages. The first programming language that I learn back then was C++ and guess what? I failed. I didn’t make it pass variable section because I was very busy back then with my full time hob and life responsibilities (C++ was very hard too). The first C++ code I wrote is this simple profit calculator, life changing right ?! int main() { string whatToSell; float capitalMoney; float todaySales; cout &lt;&lt; "Tell me what do you want to sell: "; cin &gt;&gt; whatToSell; cout &lt;&lt; "This is your " &lt;&lt; whatToSell &lt;&lt; " business calculator\n"; cout &lt;&lt; "Enter your entry money: "; cin &gt;&gt; capitalMoney; cout &lt;&lt; "Enter today sales: "; cin &gt;&gt; todaySales; cout &lt;&lt; "Your profit for today is " &lt;&lt; todaySales - capitalMoney&lt;&lt; "."; return 0; } I stop programming for awhile and then came back with Python, that’s the best time of my life and I really enjoy the learning process, I learn most of programming concept by learning python. I learn about variable, loop, function, oop and many more. This is not an advertisement or promoting Python programming language, but I really recommend people who want to learn programming to learn Python. This is because it help to teach you the concept of programming language properly, after that, you can move on to any language that you like. For people who like web development especially frontend, you can start by learning javascript. While learning Python, I heard about Linux and I become curious, really curious. I started to dig more about Linux, I have my own computer that time (late of 2019) and I installed Ubuntu out of curiosity, I never looked back at Windows since then. I don’t remember what version of Ubuntu I used back then, but I installed the latest version (non lts) and I really love it back then, it run smooth, there’s so many things to do and I really love learning about it. I started to learn about command line and the power of it, how I can use my computer with only command line. Linux is becoming my new best friend that time. The problem is, I have this new addiction which is Linux, I started to distro hopped a lot, and well, I kinda stop learning programming and start to try various flavor of distros available. After many years, I have this realization that it’s actually not about the distro, it’s more about the desktop environment. I’m most comfortable with Cinnamon and Xfce DE but I use i3 the most. The reason is because it help to improve my workflow. Now, I really want to get back into programming. So last year, I register with one of the university in my country for diploma in information technology (part time). I learn a ton of new things such as computer architecture, operation system, mathematic for IT and many more technology stuff, but they only teach the basic of programming using C and Java. I heard about Rust and look into it, it is really interesting and I planned to learn it during semester break, I can’t learn it now as I have to finish my assignment and prepare for my final exam (school huh?). I still learn Python in my free time, I’ve start to get into backend development using Django (To-Do apps incoming :p). Self Reminder: Remember to touch grass once in a while.]]></summary></entry><entry><title type="html">Arch Linux</title><link href="http://localhost:4000/2023/10/01/arch-linux.html" rel="alternate" type="text/html" title="Arch Linux" /><published>2023-10-01T00:00:00+08:00</published><updated>2023-10-01T00:00:00+08:00</updated><id>http://localhost:4000/2023/10/01/arch-linux</id><content type="html" xml:base="http://localhost:4000/2023/10/01/arch-linux.html"><![CDATA[<p><strong>I use Arch BTW!</strong></p>
 
 <p>I have been a avid linux user since the late of 2019 due to my obsession with Mr. Robot and hacker wannabe cringey teenager. Long story short, I failed on my attemp to be a hacker <strong>obviously</strong>, and after distros later, I stick with Linux Mint.</p>
 

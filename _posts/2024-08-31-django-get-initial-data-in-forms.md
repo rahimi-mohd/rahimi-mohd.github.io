@@ -3,12 +3,14 @@ layout: post
 author: rahimi
 ---
 
+<div class=tldr>
+    This is how you can get initial data--from models--and show it in form's field.
+</div>
 I'm on the journey to finish my diploma Final Year Project, I'll be building a Clinic Management System using Python Django on the Back-end, Html, Css and Bootstrap5 for the Front-end. In this blog, I want to explain about how we can can get data from primary key and fill a form using it using Class Based View (CBV).
 
 The situation is, I want to implement a check in system, where I can check in patient who came to the clinic, and render the data on the webpage. The check in list will be easy, I just have to use to inherit/extends `ListView`. Example:
 
-```
-
+{% highlight python %}
 clinic/urls.py
 
 ...
@@ -16,26 +18,22 @@ app_name = "clinic"
 urlpatterns = [
     path("checkin_list/", views.ListCheckInPageView.as_view(), name="checkin_list"),
 ]
+{% endhighlight %}
 
-```
-
-```
-
+{% highlight python %}
 clinic/views.py
 
 class ListCheckInPageView(ListView):
     template_name = "clinic/checkin_list.html"
     queryset = CheckIn.objects.all().order_by("-check_in_time") # this will display the latest on top
     context_object_name = "checkin_list"
-
-```
+{% endhighlight %}
 
 ---
 
 Now, this is easy right ? Well, kinda. The problem is when you want to check in patient based on their data. I have two situation where I want to check in patient 1) from the check in list, I want to implement a link/button to create new check in 2) from patient detail, I want to directly check in current patient and automatically get their data. Situation 1 should be easy to implement, example:
 
-```
-
+{% highlight python %}
 clinic/urls.py
 
 ... new code
@@ -43,11 +41,9 @@ clinic/urls.py
 path("checkin_list/checkin/" views.CheckInView.as_view(), name="checkin")
 
 ... end new code
+{% endhighlight %}
 
-```
-
-```
-
+{% highlight python %}
 clinic/views.py
 
 ... new code
@@ -62,14 +58,13 @@ class CheckInView(FormView):
     return super().form_valid(form)
 
     ... end new code
-```
+{% endhighlight %}
 
 ---
 
 To implement situation two, we will need new url, because we want an url that can handle argument which is patient primary key. 
 
-```
-
+{% highlight python %}
 clinic/urls.py
 
 ... new code
@@ -77,13 +72,11 @@ clinic/urls.py
 path("patient_list/<int:pk>/checkin/", views.CheckInView.as_view(), name="checkin_pk")
 
 ... end new code
-
-```
+{% endhighlight %}
 
 Now, the problem is: should we create another view or use the same CheckInView with additional logic inside it ? Here's what I've learn to handle this problem. To handle the problem, we need a condition where if there is primary key, we will return it, or else we will not return anything. Something like this:
 
-```
-
+{% highlight python %}
 clinic/views.py
 
 ...
@@ -113,8 +106,7 @@ class CheckInView(FormView):
         return initial
 
     ... end new code
-
-```
+{% endhighlight %}
 
 What happen in the additional view logic is, we check if primary key available, and then return it. We also need to get initial to fill the form with the data, so we fill the form based on the primary key given. Let's say our url now is `patient_list/1/checkin/`, we'll use the data from patient with primary key = 1 to fill the form.
 

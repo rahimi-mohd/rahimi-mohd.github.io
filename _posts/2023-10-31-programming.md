@@ -3,14 +3,17 @@ layout: post
 author: rahimi
 ---
 
+<div class="tldr">
+    This is a brief history on how I start to learn program and what make me want to learn more about technology and programming in general.
+</div>
+
 I started learning how to programming back in 2019, when I'm nearly 30 years old. I always think that I'm kinda late into the game and that's one of the thing that I regret in life, among others. I've always love technology stuff when I was a kid, my family own a computer when I am 7 - 8 years old, but I've never learn programming back then.
 
 Don't get me wrong, it's not like I'm a pro coder now, or I've built some life changing applications, it's just I really love coding and learn new programming languages. The first programming language that I learn back then was C++ and guess what? I failed. I didn't make it pass variable section because I was very busy back then with my full time hob and life responsibilities (__C++ was very hard too__).
 
 The first C++ code I wrote is this simple profit calculator, life changing right ?!
 
-```
-
+{% highlight cpp %}
 int main() {
     string whatToSell;
     float capitalMoney;
@@ -30,7 +33,7 @@ int main() {
 
     return 0;
 }
-```
+{% endhighlight %}
 
 
 I stop programming for awhile and then came back with Python, that's the best time of my life and I really enjoy the learning process, I learn most of programming concept by learning python. I learn about variable, loop, function, oop and many more. This is not an advertisement or promoting Python programming language, but I really recommend people who want to learn programming to learn Python. This is because it help to teach you the concept of programming language properly, after that, you can move on to any language that you like. For people who like web development especially frontend, you can start by learning javascript. 
@@ -43,4 +46,4 @@ Now, I really want to get back into programming. So last year, I register with o
 
 I still learn Python in my free time, I've start to get into backend development using Django (To-Do apps incoming :p). 
 
-Self Reminder: Remember to touch grass one in a while.
+Self Reminder: Remember to touch grass once in a while.

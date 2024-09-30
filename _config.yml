@@ -11,3 +11,7 @@ domain: rahimi-mohd.github.io
 url: https://rahimi-mohd.github.io
 
 excerpt_separator: <!--more-->
+
+# syntax color
+markdown: kramdown
+highlighther: rouge

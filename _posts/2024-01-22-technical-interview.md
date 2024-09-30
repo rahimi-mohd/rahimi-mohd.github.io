@@ -3,6 +3,10 @@ layout: post
 author: rahimi
 ---
 
+<div class="tldr">
+    Well, my first ever technical interview which obviously I failed.
+</div>
+
 Hello world, one of my goals for this year is to get an IT job, the positions that I focus on are backend engineer and software tester (manual or automation). Since I'm already on my second year of my diploma, I tried to apply for some job which I think suits me and where I can get a real experiences from. Even though I really want to start working and learn hands on this year, I don't have high hope that I can land a job since I know the job market for IT this year has been unstable with all the layoff and stuff, but I want to try my luck and see what happen.
 
 To my suprise, there's some companies who reach back and want to interview me. Unfortunately, I have to reject one interview (backend/embedded engineer), due to it being too far from my home and they didn't allowed work from home. Actually, I don't care about working from office, I just don't want to spend half of my day on the road commuting from home to office and back.
@@ -30,11 +34,11 @@ should return ["emma", "olivia", "sophia"]
 
 **My answer**
 
-```
-    def unique_names(l: list[str], ll: list[int]) -> list[int]:
-        names = l + ll
-        return list(set(names))
-```
+{% highlight python %}
+def unique_names(l: list[str], ll: list[int]) -> list[int]:
+    names = l + ll
+    return list(set(names))
+{% endhighlight %}
 ---
 
 ### Question Two:
@@ -43,14 +47,14 @@ Create a function find_roots to find the roots of the quadratic equation: ax**2 
 
 **My answer:**
 
-```
-    import math
-    def find_roots(a: int, b: int, c: int) -> list[int]:
-        d = math.sqrt(b**2 - 4 * a * c)
-        root_1 = (-b + d) / (2 * a)
-        root_2 = (-b - d) / (2 * a)
-        return [root_1, root_2]
-```
+{% highlight python %}
+import math
+def find_roots(a: int, b: int, c: int) -> list[int]:
+    d = math.sqrt(b**2 - 4 * a * c)
+    root_1 = (-b + d) / (2 * a)
+    root_2 = (-b - d) / (2 * a)
+    return [root_1, root_2]
+{% endhighlight %}
 ---
 
 ### Question Three:
@@ -59,23 +63,23 @@ Given a files with key value of k: text_file_name, v: name, return a map of k: n
 
 **My answer:**
 
-```
-    files = {
-        "Input.txt" : "Randy",
-        "Code.py" : "Stan",
-        "Output.txt" : "Randy"
-    }
+{% highlight python %}
+files = {
+    "Input.txt" : "Randy",
+    "Code.py" : "Stan",
+    "Output.txt" : "Randy"
+}
 
-    def group_by_owner(files: dict) -> dict:
-        m = {}
-        for k, v in files.item():
-            if v not in m:
-                m[v] = [k]
-            else:
-                m[v].append(k)
-        
-        return m
-```
+def group_by_owner(files: dict) -> dict:
+    m = {}
+    for k, v in files.item():
+        if v not in m:
+            m[v] = [k]
+        else:
+            m[v].append(k)
+    
+    return m
+{% endhighlight %}
 ---
 
 ### Question Four:
@@ -85,19 +89,19 @@ Implement NumericInput class that inherit from TextInput, override the add metho
 
 **My answer**
 
-```
-    class TextInput:
-        def __init__(self):
-            self.value = ""
-        def add(self, text):
-            self.value = text    
-        def get_value(self):
-            return self.value
-    class NumericInput(TextInput):
-        def add(self, text):
-        if text.isdigit():
-            self.value += text
-```
+{% highlight python %}
+class TextInput:
+    def __init__(self):
+        self.value = ""
+    def add(self, text):
+        self.value = text    
+    def get_value(self):
+        return self.value
+class NumericInput(TextInput):
+    def add(self, text):
+    if text.isdigit():
+        self.value += text
+{% endhighlight %}
 ---
 
 ### Conclusion
