@@ -13,9 +13,9 @@ title: About
 
 05-2022 - Now, Open University Malaysia  
 Diploma in Information Technology (Final Year)  
-CGPA: 3.85
-Internship Date: Jan 2025
-Expected Graduated: May 2025
+CGPA: 3.85  
+Internship Date: Jan 2025  
+Expected Graduated: May 2025  
 
 <div class="title-font">
     <h3>Projects</h3>
