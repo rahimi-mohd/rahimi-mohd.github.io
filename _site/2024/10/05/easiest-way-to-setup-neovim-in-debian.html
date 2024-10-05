@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="rahimi-mohd.github.io" />
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Easiest Way To Setup Neovim In Debian | rahimi-mohd.github.io</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Easiest Way To Setup Neovim In Debian" />
+<meta name="author" content="rahimi" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Emacs users are banned from this post! Introduction Nah, I’m kidding ! Emacs users or any IDE users are welcome in this post. I actually use VSCode and Neovim interchangeably due to several reason which I will explain later. So, what’s so hard about how to setup Neovim in Debian ? You just have to install it with $ sudo apt install neovim and call it with nvim command right ? Well, yes and no. If you want to set it up manually, then you’re more than welcome to use command above and stop reading this post, stop wasting your time and go do something valuable. The reason why I’m writing this is: for someone who want to use Neovim’s distribution?–I don’t know what you called it, distribution or flavour? Or something like that–like LazyVim etc. “I’m very excited to install Neovim with LazyVim, every YouTuber are using it and it’ll be shame if I didn’t learn it”. If we go to LazyVim official website, you will be disappointed when you see the main requirement is Neovim &gt;= 0.9.0, which needed to be built with LuaJIT. Oh no, let’s check which version comes with Debian. apt search neovim And we can see that it will return. neovim/stable 0.7.2-7 amd64 heavily refactored vim fork “God, we can’t install LazyVim with this version ! Should we look for another IDE ? Or even better, to look for another distros which come with latest version of Neovim ?”, This may be what’s in your small brain–for now–after you see neovim/stable 0.7.2-7, very stable indeed. Setup Now, if this is your problem, come along, I have a solution for you. What ? Flatpak ? Well, maybe you can use Flatpak, but I’m going to show how you can use App Image instead. First of all, we have to download the App Image from Neovim’s GitHub, you can do this by using curl. curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage Then, turn it into executable, what’s the point of a program if you can’t execute it right ? chmod u+x nvim.appimage # there another way to do this by using numbering, but...idk :p Lastly, we have to move this App Image to our path, I choose /usr/local/bin/. echo $PATH # will list down all PATH in your system sudo mv nvim.appimage /usr/local/bin/nvim # move the App Image from current folder to path with the name nvim NOTE: Notice that I use sudo because you need to have super user permission to move something into /usr/local/bin/. Then, I change nvim.appimage to only nvim(the last line) so that I can call it nvim instead of nvim.appimage anytime I want to use it. END This is it, now you can install LazyVim with this version of Neovim–which currently v0.10.2–how fun is that ? The only cons of using App Image: You have download the Neovim App Image and redo all this step every time there’s new version release and you want to update. This is because App Image didn’t work like package manager, you are the manager for them–or maybe there is App Image manager out there which I didn’t explore yet, since I rarely use app image. The Problem Now, maybe you’re asking me, “Why you’re still using VSCode if you like Neovim so much ?”. Well, the reason is……hmmm….How do I explain this ? The problem is: I can’t push my code to GitHub. When I do git push, It always asked for username and password, which in turn will return error every time. But, it worked just fine when I push it using VSCode git extension, that’s the reason why I use VSCode. “What’s so stupid about that?” You may asked. It’s stupid because I’ve just realized–actually this past few days–that I’ve clone all my repo using HTTPS instead of SSH and that’s the reason why I can’t push to GitHub. If you’re wondering, I follow the instructions from The Odin Project and I actually use this step several time, and it doesn’t work every time–push to GitHub. Then, I reread the instructions and you know what, you literally have to generate SSH_KEYGEN and copy it to your SSH and GPG keys setting. Tell me, “Why on earth I can’t figure it out until now that this setup is meant for SSH and still do clone in HTTPS?”. It obviously tell that this is for SSH, not HTTPS. Well, I learn from my mistake and yeah, if there’re people out there who face the similar problem like me–doubt there is–here are the solution, clone your repo using SSH instead of HTTPS. Conclusion Well, you actually have other options to install the latest version of Neovim such as Flatpak, build from source, etc. That’s the beauty of open source program where you have other alternative to choose from. I hope you have fun with you new Neovim with LazyVim setup and get good with it. And I really hope we can learn a thing or two from this post, mainly to read instructions carefully and to try understand them before running amok……CYA! References LazyVim: link Setting up Git by The Odin Project: link" />
+<meta property="og:description" content="Emacs users are banned from this post! Introduction Nah, I’m kidding ! Emacs users or any IDE users are welcome in this post. I actually use VSCode and Neovim interchangeably due to several reason which I will explain later. So, what’s so hard about how to setup Neovim in Debian ? You just have to install it with $ sudo apt install neovim and call it with nvim command right ? Well, yes and no. If you want to set it up manually, then you’re more than welcome to use command above and stop reading this post, stop wasting your time and go do something valuable. The reason why I’m writing this is: for someone who want to use Neovim’s distribution?–I don’t know what you called it, distribution or flavour? Or something like that–like LazyVim etc. “I’m very excited to install Neovim with LazyVim, every YouTuber are using it and it’ll be shame if I didn’t learn it”. If we go to LazyVim official website, you will be disappointed when you see the main requirement is Neovim &gt;= 0.9.0, which needed to be built with LuaJIT. Oh no, let’s check which version comes with Debian. apt search neovim And we can see that it will return. neovim/stable 0.7.2-7 amd64 heavily refactored vim fork “God, we can’t install LazyVim with this version ! Should we look for another IDE ? Or even better, to look for another distros which come with latest version of Neovim ?”, This may be what’s in your small brain–for now–after you see neovim/stable 0.7.2-7, very stable indeed. Setup Now, if this is your problem, come along, I have a solution for you. What ? Flatpak ? Well, maybe you can use Flatpak, but I’m going to show how you can use App Image instead. First of all, we have to download the App Image from Neovim’s GitHub, you can do this by using curl. curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage Then, turn it into executable, what’s the point of a program if you can’t execute it right ? chmod u+x nvim.appimage # there another way to do this by using numbering, but...idk :p Lastly, we have to move this App Image to our path, I choose /usr/local/bin/. echo $PATH # will list down all PATH in your system sudo mv nvim.appimage /usr/local/bin/nvim # move the App Image from current folder to path with the name nvim NOTE: Notice that I use sudo because you need to have super user permission to move something into /usr/local/bin/. Then, I change nvim.appimage to only nvim(the last line) so that I can call it nvim instead of nvim.appimage anytime I want to use it. END This is it, now you can install LazyVim with this version of Neovim–which currently v0.10.2–how fun is that ? The only cons of using App Image: You have download the Neovim App Image and redo all this step every time there’s new version release and you want to update. This is because App Image didn’t work like package manager, you are the manager for them–or maybe there is App Image manager out there which I didn’t explore yet, since I rarely use app image. The Problem Now, maybe you’re asking me, “Why you’re still using VSCode if you like Neovim so much ?”. Well, the reason is……hmmm….How do I explain this ? The problem is: I can’t push my code to GitHub. When I do git push, It always asked for username and password, which in turn will return error every time. But, it worked just fine when I push it using VSCode git extension, that’s the reason why I use VSCode. “What’s so stupid about that?” You may asked. It’s stupid because I’ve just realized–actually this past few days–that I’ve clone all my repo using HTTPS instead of SSH and that’s the reason why I can’t push to GitHub. If you’re wondering, I follow the instructions from The Odin Project and I actually use this step several time, and it doesn’t work every time–push to GitHub. Then, I reread the instructions and you know what, you literally have to generate SSH_KEYGEN and copy it to your SSH and GPG keys setting. Tell me, “Why on earth I can’t figure it out until now that this setup is meant for SSH and still do clone in HTTPS?”. It obviously tell that this is for SSH, not HTTPS. Well, I learn from my mistake and yeah, if there’re people out there who face the similar problem like me–doubt there is–here are the solution, clone your repo using SSH instead of HTTPS. Conclusion Well, you actually have other options to install the latest version of Neovim such as Flatpak, build from source, etc. That’s the beauty of open source program where you have other alternative to choose from. I hope you have fun with you new Neovim with LazyVim setup and get good with it. And I really hope we can learn a thing or two from this post, mainly to read instructions carefully and to try understand them before running amok……CYA! References LazyVim: link Setting up Git by The Odin Project: link" />
+<link rel="canonical" href="http://localhost:4000/2024/10/05/easiest-way-to-setup-neovim-in-debian.html" />
+<meta property="og:url" content="http://localhost:4000/2024/10/05/easiest-way-to-setup-neovim-in-debian.html" />
+<meta property="og:site_name" content="rahimi-mohd.github.io" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-10-05T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Easiest Way To Setup Neovim In Debian" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"rahimi"},"dateModified":"2024-10-05T00:00:00+08:00","datePublished":"2024-10-05T00:00:00+08:00","description":"Emacs users are banned from this post! Introduction Nah, I’m kidding ! Emacs users or any IDE users are welcome in this post. I actually use VSCode and Neovim interchangeably due to several reason which I will explain later. So, what’s so hard about how to setup Neovim in Debian ? You just have to install it with $ sudo apt install neovim and call it with nvim command right ? Well, yes and no. If you want to set it up manually, then you’re more than welcome to use command above and stop reading this post, stop wasting your time and go do something valuable. The reason why I’m writing this is: for someone who want to use Neovim’s distribution?–I don’t know what you called it, distribution or flavour? Or something like that–like LazyVim etc. “I’m very excited to install Neovim with LazyVim, every YouTuber are using it and it’ll be shame if I didn’t learn it”. If we go to LazyVim official website, you will be disappointed when you see the main requirement is Neovim &gt;= 0.9.0, which needed to be built with LuaJIT. Oh no, let’s check which version comes with Debian. apt search neovim And we can see that it will return. neovim/stable 0.7.2-7 amd64 heavily refactored vim fork “God, we can’t install LazyVim with this version ! Should we look for another IDE ? Or even better, to look for another distros which come with latest version of Neovim ?”, This may be what’s in your small brain–for now–after you see neovim/stable 0.7.2-7, very stable indeed. Setup Now, if this is your problem, come along, I have a solution for you. What ? Flatpak ? Well, maybe you can use Flatpak, but I’m going to show how you can use App Image instead. First of all, we have to download the App Image from Neovim’s GitHub, you can do this by using curl. curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage Then, turn it into executable, what’s the point of a program if you can’t execute it right ? chmod u+x nvim.appimage # there another way to do this by using numbering, but...idk :p Lastly, we have to move this App Image to our path, I choose /usr/local/bin/. echo $PATH # will list down all PATH in your system sudo mv nvim.appimage /usr/local/bin/nvim # move the App Image from current folder to path with the name nvim NOTE: Notice that I use sudo because you need to have super user permission to move something into /usr/local/bin/. Then, I change nvim.appimage to only nvim(the last line) so that I can call it nvim instead of nvim.appimage anytime I want to use it. END This is it, now you can install LazyVim with this version of Neovim–which currently v0.10.2–how fun is that ? The only cons of using App Image: You have download the Neovim App Image and redo all this step every time there’s new version release and you want to update. This is because App Image didn’t work like package manager, you are the manager for them–or maybe there is App Image manager out there which I didn’t explore yet, since I rarely use app image. The Problem Now, maybe you’re asking me, “Why you’re still using VSCode if you like Neovim so much ?”. Well, the reason is……hmmm….How do I explain this ? The problem is: I can’t push my code to GitHub. When I do git push, It always asked for username and password, which in turn will return error every time. But, it worked just fine when I push it using VSCode git extension, that’s the reason why I use VSCode. “What’s so stupid about that?” You may asked. It’s stupid because I’ve just realized–actually this past few days–that I’ve clone all my repo using HTTPS instead of SSH and that’s the reason why I can’t push to GitHub. If you’re wondering, I follow the instructions from The Odin Project and I actually use this step several time, and it doesn’t work every time–push to GitHub. Then, I reread the instructions and you know what, you literally have to generate SSH_KEYGEN and copy it to your SSH and GPG keys setting. Tell me, “Why on earth I can’t figure it out until now that this setup is meant for SSH and still do clone in HTTPS?”. It obviously tell that this is for SSH, not HTTPS. Well, I learn from my mistake and yeah, if there’re people out there who face the similar problem like me–doubt there is–here are the solution, clone your repo using SSH instead of HTTPS. Conclusion Well, you actually have other options to install the latest version of Neovim such as Flatpak, build from source, etc. That’s the beauty of open source program where you have other alternative to choose from. I hope you have fun with you new Neovim with LazyVim setup and get good with it. And I really hope we can learn a thing or two from this post, mainly to read instructions carefully and to try understand them before running amok……CYA! References LazyVim: link Setting up Git by The Odin Project: link","headline":"Easiest Way To Setup Neovim In Debian","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/10/05/easiest-way-to-setup-neovim-in-debian.html"},"url":"http://localhost:4000/2024/10/05/easiest-way-to-setup-neovim-in-debian.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- <link rel="stylesheet" href="/assets/css/styles.scss"> -->
+    <title>Easiest Way To Setup Neovim In Debian</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+    
+    <a href="/" class="nav-item">Home</a>
+    
+    <a href="/about.html" class="nav-item">About</a>
+    
+</nav>
+
+
+    <div class="main-container">
+        <h1>Easiest Way To Setup Neovim In Debian</h1>
+<p>05 Oct 2024 - rahimi</p>
+<hr>
+
+<div class="post-container">
+    <div class="tldr">
+  Emacs users are banned from this post!
+</div>
+
+<div class="title-font">
+    <h3>Introduction</h3>
+</div>
+
+<p>Nah, I’m kidding ! Emacs users or any IDE users are welcome in this post. I actually use VSCode and Neovim interchangeably due to several reason which I will explain later. So, what’s so hard about <strong>how to setup Neovim in Debian</strong> ? You just have to install it with <code class="language-plaintext highlighter-rouge">$ sudo apt install neovim</code> and call it with <code class="language-plaintext highlighter-rouge">nvim</code> command right ? Well, yes and no.</p>
+
+<p>If you want to set it up manually, then you’re more than welcome to use command above and stop reading this post, stop wasting your time and go do something valuable. The reason why I’m writing this is: for someone who want to use Neovim’s distribution?–I don’t know what you called it, distribution or flavour? Or something like that–like LazyVim etc.</p>
+
+<p>“I’m very excited to install Neovim with LazyVim, every YouTuber are using it and it’ll be shame if I didn’t learn it”. If we go to LazyVim official website, you will be disappointed when you see the main requirement is Neovim &gt;= 0.9.0, which needed to be built with LuaJIT. Oh no, let’s check which version comes with Debian.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">apt search neovim</code></pre></figure>
+
+<p>And we can see that it will return.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">neovim/stable 0.7.2-7 amd64
+  heavily refactored vim fork</code></pre></figure>
+
+<p>“God, we can’t install LazyVim with this version ! Should we look for another IDE ? Or even better, to look for another distros which come with latest version of Neovim ?”, This may be what’s in your small brain–for now–after you see <strong>neovim/stable 0.7.2-7</strong>, very stable indeed.</p>
+
+<div class="title-font">
+    <h3>Setup</h3>
+</div>
+
+<p>Now, if this is your problem, come along, I have a solution for you. What ? Flatpak ? Well, maybe you can use Flatpak, but I’m going to show how you can use App Image instead.</p>
+
+<p>First of all, we have to download the App Image from Neovim’s GitHub, you can do this by using curl.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">curl <span class="nt">-LO</span> https://github.com/neovim/neovim/releases/latest/download/nvim.appimage</code></pre></figure>
+
+<p>Then, turn it into executable, what’s the point of a program if you can’t execute it right ?</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">chmod </span>u+x nvim.appimage <span class="c"># there another way to do this by using numbering, but...idk :p</span></code></pre></figure>
+
+<p>Lastly, we have to move this App Image to our path, I choose <code class="language-plaintext highlighter-rouge">/usr/local/bin/</code>.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nb">echo</span> <span class="nv">$PATH</span> <span class="c"># will list down all PATH in your system</span>
+<span class="nb">sudo mv </span>nvim.appimage /usr/local/bin/nvim <span class="c"># move the App Image from current folder to path with the name nvim</span></code></pre></figure>
+
+<p><strong>NOTE</strong>: Notice that I use sudo because you need to have super user permission to move something into /usr/local/bin/. Then, I change nvim.appimage to only nvim(the last line) so that I can call it nvim instead of nvim.appimage anytime I want to use it. <strong>END</strong></p>
+
+<p>This is it, now you can install LazyVim with this version of Neovim–which currently v0.10.2–how fun is that ? The only cons of using App Image: You have download the Neovim App Image and redo all this step every time there’s new version release and you want to update. This is because App Image didn’t work like package manager, you are the manager for them–or maybe there is App Image manager out there which I didn’t explore yet, since I rarely use app image.</p>
+
+<div class="title-font">
+    <h3>The Problem</h3>
+</div>
+
+<p>Now, maybe you’re asking me, “Why you’re still using VSCode if you like Neovim so much ?”. Well, the reason is……hmmm….How do I explain this ?</p>
+
+<p>The problem is: I can’t push my code to GitHub. When I do <code class="language-plaintext highlighter-rouge">git push</code>, It always asked for username and password, which in turn will return error every time. But, it worked just fine when I push it using VSCode git extension, that’s the reason why I use VSCode.</p>
+
+<p>“What’s so stupid about that?” You may asked. It’s stupid because I’ve just realized–actually this past few days–that I’ve clone all my repo using HTTPS instead of SSH and that’s the reason why I can’t push to GitHub. If you’re wondering, I follow the instructions from The Odin Project and I actually use this step several time, and it doesn’t work every time–push to GitHub.</p>
+
+<p>Then, I reread the instructions and you know what, you literally have to generate <strong>SSH_KEYGEN</strong> and copy it to your <strong>SSH and GPG keys</strong> setting. Tell me, “Why on earth I can’t figure it out until now that this setup is meant for SSH and still do clone in HTTPS?”. It obviously tell that this is for SSH, not HTTPS. Well, I learn from my mistake and yeah, if there’re people out there who face the similar problem like me–doubt there is–here are the solution, clone your repo using SSH instead of HTTPS.</p>
+
+<div class="title-font">
+    <h3>Conclusion</h3>
+</div>
+
+<p>Well, you actually have other options to install the latest version of Neovim such as Flatpak, build from source, etc. That’s the beauty of open source program where you have other alternative to choose from. I hope you have fun with you new Neovim with LazyVim setup and get good with it. And I really hope we can learn a thing or two from this post, mainly to <strong>read instructions carefully and to try understand them before running amok</strong>……CYA!</p>
+
+<div class="title-font">
+    <h3>References</h3>
+</div>
+
+<ol>
+  <li>LazyVim: <a href="https://www.lazyvim.org/">link</a></li>
+  <li>Setting up Git by The Odin Project: <a href="https://www.theodinproject.com/lessons/foundations-setting-up-git">link</a></li>
+</ol>
+
+</div>
+    </div>
+
+</body>
+
+</html>

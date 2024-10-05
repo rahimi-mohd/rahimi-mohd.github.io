@@ -28,7 +28,7 @@ Add `GEM_HOME` and it executable path in `.bashrc`
 {% highlight shell %}
 .bashrc
 GEM_HOME="$HOME/.gems"  # change .gems to gems if you don't want to hide it
-export PATH=$PATH:"$HOME/.gems.bin"
+export PATH=$PATH:"$HOME/.gems/bin"
 {% endhighlight %}
 
 Install jekyll and bundler
